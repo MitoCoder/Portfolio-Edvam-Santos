@@ -174,7 +174,7 @@ const Home = () => {
         marginTop: '20px',
       }}>
         <div style={{ ...borderStyle }}>
-          <h2 style={headingStyle}>Meu Percuso no Github:</h2>
+          <h2 style={headingStyle}>Meu Percurso no Github:</h2>
           {readmeContent && (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               {getReadmeImages(readmeContent).map((imageUrl, index) => (
