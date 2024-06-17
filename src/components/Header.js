@@ -88,7 +88,7 @@ const MeuHeader = () => {
           <Menu mode="horizontal" style={{ background: "#001529" }}>
             <SubMenu
               title={
-                <span style={{ color: "#fff", marginRight: "4px", fontSize: "16px" }}>
+                <span style={{ color: "#fff", marginRight: "4px", fontSize: "16px", display: "flex", alignItems: "center", justifyContent: "center" }}>
                   Redes Sociais:
                 </span>
               }
@@ -104,7 +104,7 @@ const MeuHeader = () => {
                     style={{ color: "#001529", padding: "4px 8px" }}
                   >
                     {icon}
-                    <span style={{ marginLeft: "4px" }}>{label}</span>
+                    <span style={{ marginLeft: "4px", color: "#001529" }}>{label}</span>
                   </a>
                 </Menu.Item>
               ))}
@@ -120,14 +120,14 @@ const MeuHeader = () => {
                 rel="noopener noreferrer"
                 style={{
                   ...socialLinkStyle,
-                  borderBottom: hoveredKey === key ? "4px solid white" : "none",
+                  borderBottom: hoveredKey === key ? "4px solid #fff" : "none",
                   margin: "0 2px",
                 }}
                 onMouseEnter={() => setHoveredKey(key)}
                 onMouseLeave={() => setHoveredKey(null)}
               >
                 {icon}
-                <span style={{ marginLeft: "4px" }}>{label}</span>{" "}
+                <span style={{ marginLeft: "4px", color: "#fff" }}>{label}</span>{" "}
                 {/* Espaçamento de 4px entre o ícone e o texto */}
               </a>
             ))}
