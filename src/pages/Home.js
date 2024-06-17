@@ -154,7 +154,7 @@ const Home = () => {
           <img src={repoData && repoData.owner.avatar_url} alt="Avatar do dono do repositório" style={{ width: '150px', height: '150px', borderRadius: '60%', marginBottom: '5px' }} />
           <h2 style={{ ...headingStyle, fontSize: '25px' }}>{'Eu sou: Edvam dos Santos'}</h2>
           <p>Sobre: <a href="https://github.com/MitoCoder">GitHub</a></p>
-          <p>👨‍💻 Mestre dos commits, caçador de bugs e amante de memes. Codando com humor desde 2014.</p>
+          <p>💼 Mestre dos commits, caçador de bugs e amante de memes. Codando com humor desde 2014.</p>
         </div>
         {renderBlocks()}
         <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
