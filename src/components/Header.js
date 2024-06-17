@@ -68,7 +68,7 @@ const MeuHeader = () => {
       <Header style={headerStyle}>
         <div style={logoStyle}>
           {profileImageUrl && <Avatar src={profileImageUrl} size="large" style={{ marginRight: '6px' }} />} {/* Margem de 6px à direita do avatar */}
-          <h1 style={titleStyle}>Meu Portfólio</h1>
+          <h1 style={{ ...titleStyle, fontSize: '22px' }}>Portfólio</h1> 
         </div>
         {isMobile ? (
           <Menu mode="horizontal" style={{ background: '#001529' }}>
