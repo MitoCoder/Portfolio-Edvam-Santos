@@ -88,11 +88,12 @@ const MeuHeader = () => {
           <Menu mode="horizontal" style={{ background: "#001529" }}>
             <SubMenu
               title={
-                <span style={{ color: "#fff", marginRight: "4px" }}>
-                  Redes Sociais
+                <span style={{ color: "#fff", marginRight: "4px", fontSize: "16px" }}>
+                  Redes Sociais:
                 </span>
               }
-              popupClassName="customSubMenu"
+              popupClassName="customSubMenu" // Classe personalizada para o submenu
+              style={{ width: "200px" }} // Ajuste a largura conforme necessário
             >
               {socialLinks.map(({ href, icon, key, label }) => (
                 <Menu.Item key={key}>
@@ -103,8 +104,7 @@ const MeuHeader = () => {
                     style={{ color: "#001529", padding: "4px 8px" }}
                   >
                     {icon}
-                    <span style={{ marginLeft: "4px" }}>{label}</span>{" "}
-                    {/* Espaçamento de 4px entre o ícone e o texto */}
+                    <span style={{ marginLeft: "4px" }}>{label}</span>
                   </a>
                 </Menu.Item>
               ))}
