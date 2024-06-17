@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Layout } from 'antd';
+import { Layout, Avatar, Menu } from 'antd';
 import { GithubOutlined, LinkedinOutlined, FacebookOutlined, WhatsAppOutlined, InstagramOutlined } from '@ant-design/icons';
 
 const { Header } = Layout;
+const { SubMenu } = Menu;
 
 const MeuHeader = () => {
   const [profileImageUrl, setProfileImageUrl] = useState('');
   const [hoveredKey, setHoveredKey] = useState(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768); // Define se a tela é considerada mobile
 
   useEffect(() => {
     fetch('https://api.github.com/repos/MitoCoder/MitoCoder')
@@ -19,120 +21,128 @@ const MeuHeader = () => {
       });
   }, []);
 
+  const handleResize = () => {
+    setIsMobile(window.innerWidth <= 768); // Atualiza o estado de acordo com o tamanho da tela
+  };
 
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const socialLinks = [
+    {
+      href: 'https://www.linkedin.com/in/mycosmus/',
+      icon: <LinkedinOutlined />,
+      key: 'linkedin',
+      label: 'LinkedIn',
+    },
+    {
+      href: 'https://www.facebook.com/mycosmus',
+      icon: <FacebookOutlined />,
+      key: 'facebook',
+      label: 'Facebook',
+    },
+    {
+      href: 'https://wa.me/5511957207168',
+      icon: <WhatsAppOutlined />,
+      key: 'whatsapp',
+      label: 'WhatsApp',
+    },
+    {
+      href: 'https://www.github.com/MitoCoder',
+      icon: <GithubOutlined />,
+      key: 'github',
+      label: 'GitHub',
+    },
+    {
+      href: 'https://www.instagram.com/mycosmus',
+      icon: <InstagramOutlined />,
+      key: 'instagram',
+      label: 'Instagram',
+    },
+  ];
 
   return (
-    <Header style={{ background: '#001529', display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingRight: '20px' }}>
-      <div className="logo" style={{ display: 'flex', alignItems: 'center' }}>
-        {profileImageUrl && (
-          <img src={profileImageUrl} alt="Minha Foto de Perfil" style={{ width: '40px', height: '40px', borderRadius: '50%', marginRight: '10px' }} />
+    <>
+      <Header style={headerStyle}>
+        <div style={logoStyle}>
+          {profileImageUrl && <Avatar src={profileImageUrl} size="large" style={{ marginRight: '6px' }} />} {/* Margem de 6px à direita do avatar */}
+          <h1 style={titleStyle}>Meu Portfólio</h1>
+        </div>
+        {isMobile ? (
+          <Menu mode="horizontal" style={{ background: '#001529' }}>
+            <SubMenu title={<span style={{ color: '#fff', marginRight: '4px' }}>Redes Sociais</span>} popupClassName="customSubMenu">
+              {socialLinks.map(({ href, icon, key, label }) => (
+                <Menu.Item key={key}>
+                  <a href={href} target="_blank" rel="noopener noreferrer" style={{ color: '#001529', marginLeft: '4px' }}>
+                    {icon}
+                    <span style={{ marginLeft: '4px' }}>{label}</span> {/* Espaçamento de 4px entre o ícone e o texto */}
+                  </a>
+                </Menu.Item>
+              ))}
+            </SubMenu>
+          </Menu>
+        ) : (
+          <div style={socialLinksContainer}>
+            {socialLinks.map(({ href, icon, key, label }) => (
+              <a
+                key={key}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ ...socialLinkStyle, borderBottom: hoveredKey === key ? '4px solid white' : 'none', margin: '0 2px' }}
+                onMouseEnter={() => setHoveredKey(key)}
+                onMouseLeave={() => setHoveredKey(null)}
+              >
+                {icon}
+                <span style={{ marginLeft: '4px' }}>{label}</span> {/* Espaçamento de 4px entre o ícone e o texto */}
+              </a>
+            ))}
+          </div>
         )}
-        <h1 style={{ color: '#fff', margin: 0 }}>Meu Portfólio</h1>
-      </div>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <span style={{ color: '#fff', marginRight: '20px' }}>Redes Sociais:</span>
-        <div style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}>
-          <a href="https://www.linkedin.com/in/mycosmus/" 
-             target="_blank" 
-             rel="noopener noreferrer" 
-             style={{ 
-               color: '#fff', 
-               display: 'flex', 
-               alignItems: 'center', 
-               marginRight: '10px', 
-               position: 'relative',
-               paddingBottom: hoveredKey === 'linkedin' ? '4px' : '0',
-               borderBottom: hoveredKey === 'linkedin' ? '4px solid white' : 'none'
-             }}
-             onMouseEnter={() => setHoveredKey('linkedin')}
-             onMouseLeave={() => setHoveredKey(null)}
-          >
-            <LinkedinOutlined style={{ fontSize: '18px', marginRight: '4px' }} />
-            LinkedIn
-          </a>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}>
-          <a href="https://www.facebook.com/mycosmus" 
-             target="_blank" 
-             rel="noopener noreferrer" 
-             style={{ 
-               color: '#fff', 
-               display: 'flex', 
-               alignItems: 'center', 
-               marginRight: '10px', 
-               position: 'relative',
-               paddingBottom: hoveredKey === 'facebook' ? '4px' : '0',
-               borderBottom: hoveredKey === 'facebook' ? '4px solid white' : 'none'
-             }}
-             onMouseEnter={() => setHoveredKey('facebook')}
-             onMouseLeave={() => setHoveredKey(null)}
-          >
-            <FacebookOutlined style={{ fontSize: '18px', marginRight: '4px' }} />
-            Facebook
-          </a>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}>
-          <a href="https://wa.me/5511957207168" 
-             target="_blank" 
-             rel="noopener noreferrer" 
-             style={{ 
-               color: '#fff', 
-               display: 'flex', 
-               alignItems: 'center', 
-               marginRight: '10px', 
-               position: 'relative',
-               paddingBottom: hoveredKey === 'whatsapp' ? '4px' : '0',
-               borderBottom: hoveredKey === 'whatsapp' ? '4px solid white' : 'none'
-             }}
-             onMouseEnter={() => setHoveredKey('whatsapp')}
-             onMouseLeave={() => setHoveredKey(null)}
-          >
-            <WhatsAppOutlined style={{ fontSize: '18px', marginRight: '4px' }} />
-            WhatsApp
-          </a>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}>
-          <a href="https://www.github.com/MitoCoder" 
-             target="_blank" 
-             rel="noopener noreferrer" 
-             style={{ 
-               color: '#fff', 
-               display: 'flex', 
-               alignItems: 'center', 
-               marginRight: '10px', 
-               position: 'relative',
-               paddingBottom: hoveredKey === 'github' ? '4px' : '0',
-               borderBottom: hoveredKey === 'github' ? '4px solid white' : 'none'
-             }}
-             onMouseEnter={() => setHoveredKey('github')}
-             onMouseLeave={() => setHoveredKey(null)}
-          >
-            <GithubOutlined style={{ fontSize: '18px', marginRight: '4px' }} />
-            GitHub
-          </a>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <a href="https://www.instagram.com/mycosmus" 
-             target="_blank" 
-             rel="noopener noreferrer" 
-             style={{ 
-               color: '#fff', 
-               display: 'flex', 
-               alignItems: 'center', 
-               position: 'relative',
-               paddingBottom: hoveredKey === 'instagram' ? '4px' : '0',
-               borderBottom: hoveredKey === 'instagram' ? '4px solid white' : 'none'
-             }}
-             onMouseEnter={() => setHoveredKey('instagram')}
-             onMouseLeave={() => setHoveredKey(null)}
-          >
-            <InstagramOutlined style={{ fontSize: '18px', marginRight: '4px' }} />
-            Instagram
-          </a>
-        </div>
-      </div>
-    </Header>
+      </Header>
+      <div style={lineStyle}></div>
+    </>
   );
-}
+};
+
+const headerStyle = {
+  background: '#001529',
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  padding: '0 20px',
+  height: '64px',
+  boxSizing: 'border-box',
+};
+
+const logoStyle = {
+  display: 'flex',
+  alignItems: 'center',
+};
+
+const titleStyle = {
+  color: '#fff',
+  margin: 0,
+  whiteSpace: 'nowrap',
+  fontSize: '1.5rem', // Tamanho de fonte ajustado para versão mobile
+};
+
+const socialLinksContainer = {
+  display: 'flex',
+  gap: '20px', // Espaçamento entre os ícones de redes sociais
+};
+
+const socialLinkStyle = {
+  color: '#fff',
+  display: 'flex',
+  alignItems: 'center',
+};
+
+const lineStyle = {
+  height: '10px',
+  background: '#000', // Cor da linha alterada para dark (#000)
+};
 
 export default MeuHeader;

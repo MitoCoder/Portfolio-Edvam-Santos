@@ -36,3 +36,11 @@
     transform: rotate(360deg);
   }
 }
+.customSubMenu {
+  padding: 0;
+}
+
+.customSubMenu .ant-menu-submenu-title {
+  padding: 0 5px; /* Ajuste o espaçamento da barra de seleção mais próxima do texto */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Adicione uma sombra ao redor da barra */
+}
