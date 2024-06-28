@@ -45,8 +45,8 @@ const Home = () => {
               {
                 id: 'patchii',
                 title: 'Patchii Decorações',
-                description: 'Desenvolvi em conjunto com a equipe diversas melhorias no sistema para atender as nescessidades do PCP utilizando JavaScript, focado em proporcionar uma experiência única para os usuários interessados em decoração (2019).',
-                projectLink: 'https://www.patchii.com.br/',
+                description: 'Desenvolvi em conjunto com a equipe diversas melhorias no sistema IMPACTO para atender as nescessidades do PCP utilizando JavaScript, focado em proporcionar uma experiência única para os usuários interessados em decoração (2019).',
+                projectLink: 'https://trssistemas.com.br/sistema-impacto/',
               },
               {
                 id: 'america',
