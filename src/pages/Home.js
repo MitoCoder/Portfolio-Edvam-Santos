@@ -1,190 +1,222 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import axios from 'axios';
-import { Pagination } from 'antd';
+import { Card, Row, Col, Typography, Button, Divider, Image } from 'antd';
+import { GithubOutlined, LinkedinOutlined, FacebookOutlined, WhatsAppOutlined, InstagramOutlined } from '@ant-design/icons';
+import Typewriter from 'typewriter-effect'; // Importa a biblioteca para o efeito de digitação
+import './Home.css'; // Arquivo de CSS para o design personalizado
+
+const { Title, Paragraph } = Typography;
+
+const projects = [
+  {
+    id: 'serverless',
+    title: 'Serverless no Vercel',
+    description: 'Desenvolvi um projeto utilizando Serverless na plataforma Vercel, separando o backend do frontend para uma arquitetura mais escalável e eficiente (2024).',
+    projectLink: 'https://github.com/MitoCoder/Serverless-Build-Client',
+  },
+  {
+    id: 'gestao',
+    title: 'Sistema de Locação Gestão',
+    description: 'Criei um sistema de locação chamado Sistema Gestão, com funcionalidades avançadas para gerenciamento de aluguel de equipamentos (2024).',
+    projectLink: 'https://sistemagestao.vercel.app/',
+  },
+  {
+    id: 'patchii',
+    title: 'Patchii Decorações',
+    description: 'Desenvolvi em conjunto com a equipe diversas melhorias no sistema IMPACTO para atender as necessidades do PCP utilizando JavaScript, focado em proporcionar uma experiência única para os usuários interessados em decoração (2019).',
+    projectLink: 'https://trssistemas.com.br/sistema-impacto/',
+  },
+  {
+    id: 'america',
+    title: 'America Rental',
+    description: 'Desenvolvi o site America Rental em colaboração com Murilo Cardoso. Inicialmente feito em PHP pela 4Up, migrei o site para React e depois para Wordpress (2021 a 2024).',
+    projectLink: 'https://americarental.com.br/',
+  },
+  {
+    id: 'atos',
+    title: 'Atos Technology SA',
+    description: 'Desenvolvi mais de 25 sites diversos e criei sistemas desktop em C# e JavaScript, além de trabalhar com Android Studio para criar aplicativos. Fui pioneiro em melhorias de segurança nos sistemas e sites criados (2017).',
+    projectLink: '',
+  },
+];
+
+const socialLinks = [
+  {
+    href: "https://www.facebook.com/mycosmus",
+    icon: <FacebookOutlined />,
+    key: "facebook",
+    label: "Facebook",
+  },
+  {
+    href: "https://wa.me/5511957207168",
+    icon: <WhatsAppOutlined />,
+    key: "whatsapp",
+    label: "WhatsApp",
+  },
+  {
+    href: "https://www.github.com/MitoCoder",
+    icon: <GithubOutlined />,
+    key: "github",
+    label: "GitHub",
+  },
+  {
+    href: "https://www.instagram.com/mycosmus",
+    icon: <InstagramOutlined />,
+    key: "instagram",
+    label: "Instagram",
+  },
+];
 
 const Home = () => {
-  const headingStyle = {
-    fontSize: '1.5rem',
-    marginBottom: '10px',
-    textAlign: 'center',
-  };
+  const [language, setLanguage] = useState('pt'); // Estado para controlar o idioma
+  const [photoUrl, setPhotoUrl] = useState(null); // Estado para armazenar a URL da foto
 
-  const [hoveredBlock, setHoveredBlock] = useState(null);
-  const [repoData, setRepoData] = useState(null);
-  const [readmeContent, setReadmeContent] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 2;
-
+  // Função para alternar entre idiomas
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const cachedRepoData = localStorage.getItem('repoData');
-        const cachedReadmeContent = localStorage.getItem('readmeContent');
+    const interval = setInterval(() => {
+      setLanguage((prev) => (prev === 'pt' ? 'en' : prev === 'en' ? 'es' : 'pt'));
+    }, 5000); // Alterna o idioma a cada 5 segundos
+    return () => clearInterval(interval); // Limpeza do intervalo
+  }, []);
 
-        if (cachedRepoData && cachedReadmeContent) {
-          setRepoData(JSON.parse(cachedRepoData));
-          setReadmeContent(cachedReadmeContent);
-        } else {
-          const response = await axios.get('https://api.github.com/repos/MitoCoder/MitoCoder');
-          setRepoData({
-            ...response.data,
-            blocks: [
-              {
-                id: 'serverless',
-                title: 'Serverless no Vercel',
-                description: 'Desenvolvi um projeto utilizando Serverless na plataforma Vercel, separando o backend do frontend para uma arquitetura mais escalável e eficiente (2024).',
-                projectLink: 'https://github.com/MitoCoder/Serverless-Build-Client',
-              },
-              {
-                id: 'gestao',
-                title: 'Sistema de Locação Gestão',
-                description: 'Criei um sistema de locação chamado Sistema Gestão, com funcionalidades avançadas para gerenciamento de aluguel de equipamentos (2024).',
-                projectLink: 'https://sistemagestao.vercel.app/',
-              },
-              {
-                id: 'patchii',
-                title: 'Patchii Decorações',
-                description: 'Desenvolvi em conjunto com a equipe diversas melhorias no sistema IMPACTO para atender as nescessidades do PCP utilizando JavaScript, focado em proporcionar uma experiência única para os usuários interessados em decoração (2019).',
-                projectLink: 'https://trssistemas.com.br/sistema-impacto/',
-              },
-              {
-                id: 'america',
-                title: 'America Rental',
-                description: 'Anteriormente, desenvolvi o site America Rental em colaboração com Murilo Cardoso, meu parceiro em desenvolvimento. O site inicialmente foi feito em PHP pela 4Up, porém com qualidade insatisfatória, e posteriormente migrado para React após um período, e depois para Wordpress (2021 a 2024).',
-                projectLink: 'https://americarental.com.br/',
-              },
-              {
-                id: 'atos',
-                title: 'Atos Technology SA',
-                description: 'Desenvolvi mais de 25 sites diversos e fiz implementação e criação de diversos sistemas desktop criados em C#, JavaScript. Realizei melhorias em XML e outras formas de pagamento para empresas. Além disso, utilizei muito o Android Studio para criar aplicativos. Fui pioneiro na melhoria de segurança dos sistemas e sites criados (2017).',
-                projectLink: '',
-              },
-            ],
-          });
+  // Função para buscar a foto do GitHub
+  useEffect(() => {
+    const storedPhoto = localStorage.getItem('githubPhoto'); // Verifica se a foto já foi salva
 
-          const readmeResponse = await axios.get(response.data.url + '/readme');
-          const decodedContent = decodeURIComponent(escape(atob(readmeResponse.data.content)));
-          setReadmeContent(decodedContent);
+    if (storedPhoto) {
+      setPhotoUrl(storedPhoto); // Se já existe, usa a foto do localStorage
+    } else {
+      // Caso contrário, faz a requisição à API do GitHub
+      fetch('https://api.github.com/users/MitoCoder') // Alterando para "users" para pegar a foto
+        .then(response => response.json())
+        .then(data => {
+          const photo = data.avatar_url; // Foto do usuário do GitHub
+          localStorage.setItem('githubPhoto', photo); // Armazena a foto no localStorage
+          setPhotoUrl(photo); // Atualiza o estado da foto
+        })
+        .catch(err => console.error('Erro ao buscar foto do GitHub:', err));
+    }
+  }, []);
 
-          localStorage.setItem('repoData', JSON.stringify(repoData));
-          localStorage.setItem('readmeContent', decodedContent);
-        }
-      } catch (error) {
-        console.error('Erro ao buscar os dados:', error);
-      }
-    };
-
-    fetchData();
-  }, [repoData, setRepoData]); // Incluído repoData e setRepoData na lista de dependências
-
-  const getReadmeImages = (content) => {
-    const imgRegex = /<img.*?src=["'](.*?)["']/g;
-    const matches = [...content.matchAll(imgRegex)];
-    return matches.map(match => match[1]);
+  const titleText = {
+    pt: 'Port. Edvam',
+    en: 'Hii, I am Edvam',
+    es: 'Hola, Soy Edvam'
   };
 
-  const borderStyle = {
-    backgroundColor: '#f0f0f0',
-    padding: '20px',
-    borderRadius: '10px',
-    marginBottom: '20px',
-    border: '2px solid transparent',
-    position: 'relative',
-    overflow: 'hidden',
+  const descriptionText = {
+    pt: 'Desenvolvedor Full Stack com foco em React, JavaScript, e sistemas escaláveis. Com experiência em mais de 25 projetos ao longo dos anos, sou apaixonado por transformar ideias em soluções digitais incríveis.',
+    en: 'Full Stack Developer focused on React, JavaScript, and scalable systems. With experience in over 25 projects over the years, I am passionate about turning ideas into amazing digital solutions.',
+    es: 'Desarrollador Full Stack enfocado en React, JavaScript y sistemas escalables. Con experiencia en más de 25 proyectos a lo largo de los años, me apasiona convertir ideas en soluciones digitales increíbles.'
   };
 
-  const activeBorderStyle = {
-    borderColor: '#007bff',
-    transition: 'border-color 0.3s ease-in-out',
-  };
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
-
-  const renderBlocks = () => {
-    if (!repoData) return null;
-
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const slicedBlocks = repoData.blocks.slice(startIndex, endIndex);
-
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-        {slicedBlocks.map((block, index) => (
-          <div
-            key={index}
-            style={{ ...borderStyle, ...(hoveredBlock === block.id ? activeBorderStyle : null) }}
-            onMouseEnter={() => setHoveredBlock(block.id)}
-            onMouseLeave={() => setHoveredBlock(null)}
-          >
-            <h2 style={headingStyle}>{block.title}</h2>
-            <p>{block.description}</p>
-            <p>Link do projeto: <a href={block.projectLink}>GitHub</a></p>
-          </div>
-        ))}
-      </div>
-    );
+  const sectionTitleText = {
+    pt: 'Vamos Conversar?',
+    en: 'Let\'s Talk?',
+    es: 'Hablemos?'
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 1 }}
-      style={{
-        display: 'flex',
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        maxWidth: '1200px',
-        margin: '0 auto',
-        padding: '20px',
-        gap: '20px',
-      }}
-    >
-      <div style={{
-        flex: '1 1 45%',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        marginBottom: '40px'
-      }}>
-        <div style={{ textAlign: 'center', marginBottom: '15px' }}>
-          <img src={repoData && repoData.owner.avatar_url} alt="Avatar do dono do repositório" style={{ width: '150px', height: '150px', borderRadius: '60%', marginBottom: '5px' }} />
-          <h2 style={{ ...headingStyle, fontSize: '25px' }}>{'Eu sou: Edvam dos Santos'}</h2>
-          <p>Sobre: <a href="https://github.com/MitoCoder">GitHub</a></p>
-          <p>💼 Mestre dos commits, caçador de bugs e amante de memes. Codando com humor desde 2014.</p>
-        </div>
-        {renderBlocks()}
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-          {repoData &&
-            <Pagination
-              defaultCurrent={1}
-              current={currentPage}
-              total={repoData.blocks.length}
-              pageSize={itemsPerPage}
-              onChange={handlePageChange}
-            />}
-        </div>
-      </div>
+    <div className="home-container">
+      <div className="content">
+        {/* Seção de Introdução */}
+        <section className="intro-section">
+          {/* Exibição da foto do GitHub no topo */}
+          {photoUrl && (
+            <div className="profile-info">
+              <div className="profile-photo">
+                <Image src={photoUrl} alt="Foto do GitHub" width={120} height={120} style={{ borderRadius: '50%' }} />
+              </div>
+              <div className="divider-vertical"></div> {/* Barra de separação vertical */}
+              <div className="profile-text">
+                {/* Título com efeito de digitação */}
+                <Title level={2} className="title" style={{ color: 'white' }}>
+                  <Typewriter
+                    options={{
+                      strings: [titleText.pt, titleText.en, titleText.es], // Alterna entre os idiomas
+                      autoStart: true,
+                      loop: true,
+                      deleteSpeed: 50,
+                      delay: 110,
+                    }}
+                  />
+                </Title>
 
-      <div style={{
-        flex: '1 1 45%',
-        marginTop: '20px',
-      }}>
-        <div style={{ ...borderStyle }}>
-          <h2 style={headingStyle}>Meu Percurso no Github:</h2>
-          {readmeContent && (
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              {getReadmeImages(readmeContent).map((imageUrl, index) => (
-                <img key={index} src={imageUrl} alt={`Imagem do README ${index}`} style={{ maxWidth: '100%', marginBottom: '20px' }} />
-              ))}
+                {/* Descrição com animação */}
+                <Paragraph className="description">
+                  {descriptionText[language]}
+                </Paragraph>
+                <Button className="btn-contact" icon={<GithubOutlined />} href="https://github.com/MitoCoder" target="_blank">
+                  Visite meu GitHub
+                </Button>
+              </div>
             </div>
           )}
-        </div>
+        </section>
+
+        <Divider />
+
+        {/* Seção de Projetos */}
+        <section className="projects-section">
+          <Title level={3} style={{ color: 'white' }} className="section-title">Projetos Recentes</Title>
+          <Row gutter={[16, 16]} justify="center">
+            {projects.map((project) => (
+              <Col key={project.id} xs={24} sm={12} md={8}>
+                <Card
+                  hoverable
+                  className="card"
+                  title={project.title}
+                  extra={project.projectLink ? <a href={project.projectLink} target="_blank" rel="noopener noreferrer">Ver Projeto</a> : null}
+                >
+                  <Paragraph>{project.description}</Paragraph>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        </section>
+
+        <Divider />
+
+        {/* Seção de Contato */}
+        <section className="contact-section">
+          <Title level={2} className="section-title" style={{ color: 'white' }}>
+            <Typewriter
+              options={{
+                strings: [sectionTitleText.pt, sectionTitleText.en, sectionTitleText.es], // Alterna entre os idiomas
+                autoStart: true,
+                loop: true,
+                deleteSpeed: 50,
+                delay: 100
+              }}
+            />
+          </Title>
+          {/* Botão de LinkedIn dentro do grupo de botões sociais */}
+          <div className="social-buttons">
+            <Button
+              className="btn-contact"
+              icon={<LinkedinOutlined />}
+              href="https://www.linkedin.com/in/edvamdosantos/"
+              target="_blank"
+              style={{ marginRight: '1px' }}
+            >
+              Conectar no LinkedIn
+            </Button>
+
+            {/* Botões das redes sociais em linha com espaçamento de 1px */}
+            {socialLinks.map((link) => (
+              <Button
+                key={link.key}
+                icon={link.icon}
+                href={link.href}
+                target="_blank"
+                style={{ marginRight: '1px' }}
+              >
+                {link.label}
+              </Button>
+            ))}
+          </div>
+        </section>
       </div>
-    </motion.div>
+    </div>
   );
 };
 

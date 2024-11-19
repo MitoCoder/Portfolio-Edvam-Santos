@@ -1,0 +1,200 @@
+/* CSS global para o fundo */
+.home-container {
+  position: relative;
+  min-height: 100vh;
+  background: linear-gradient(135deg, red, purple); /* Gradiente de vermelho para roxo */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  overflow-x: hidden; /* Evita barra horizontal */
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  color: white;
+  text-align: center; /* Centraliza todo o conteúdo */
+}
+
+/* Título com efeito de digitação */
+.title {
+  color: white;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  display: inline-block;
+  animation: typing 3s steps(30) 1s forwards;
+  font-size: 1.5rem; /* Ajuste o tamanho da fonte do título */
+  text-align: left; /* Alinha o título à esquerda para acompanhar o layout */
+  margin: 0;
+  margin-bottom: 2px; /* Espaço entre o título e a foto */
+}
+
+/* Centralização do título "Projetos Recentes" */
+.section-title {
+  color: white;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center; /* Centraliza o título "Projetos Recentes" */
+}
+
+/* Variáveis de espaçamento */
+:root {
+  --card-spacing: 2px; /* Espaçamento entre os cards */
+  --title-spacing: 2px; /* Espaçamento entre o título e os cards */
+  --button-spacing: 2px; /* Espaçamento entre o botão e outros elementos */
+  --profile-spacing: 2px; /* Espaçamento entre os elementos da foto */
+}
+
+/* Layout de Cards */
+.card {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+  height: 95%;
+  margin: var(--card-spacing); /* Aplica o espaçamento entre os cards */
+}
+
+.projects-section .ant-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--card-spacing); /* Espaçamento entre as colunas */
+}
+
+.projects-section .ant-col {
+  flex: 1 1 30%;
+  display: flex;
+  justify-content: center;
+}
+
+/* Estilo do profile-info (foto e texto ao lado) */
+.profile-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px; /* Espaço abaixo da foto + texto */
+  gap: var(--profile-spacing); /* Espaço entre foto, título e botão */
+}
+
+/* Barra de separação vertical */
+.divider-vertical {
+  border-left: 2px solid white;
+  height: 80px; /* Ajuste a altura da barra conforme necessário */
+  margin: 0 10px; /* Espaçamento ao redor da barra */
+}
+
+/* Estilo da foto */
+.profile-photo {
+  margin-right: 3px; /* Espaçamento entre a foto e o texto */
+  border-radius: 50%;
+}
+
+/* Estilo do texto */
+.profile-text {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  color: white;
+  justify-content: space-between;
+  margin-left: 2px;
+}
+
+/* Estilo do botão de contato */
+.btn-contact {
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 2px solid white; /* Adiciona a borda branca aos botões */
+  color: white;
+  font-size: 1rem;
+  padding: 8px 16px;
+  border-radius: 25px;
+  margin-top: var(--button-spacing);
+  min-width: 150px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.btn-contact:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+  border: 2px solid #f0f0f0; /* Efeito de borda no hover, pode ser ajustado */
+}
+
+/* Responsividade */
+@media (max-width: 576px) {
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .btn-contact {
+    font-size: 0.9rem;
+    padding: 8px 14px;
+  }
+
+  .profile-info {
+    flex-direction: column; /* Para telas menores, coloca a foto e o texto em colunas empilhadas */
+    text-align: center; /* Alinha o texto ao centro */
+  }
+
+  .profile-photo {
+    margin-bottom: 10px; /* Espaço entre a foto e o texto em telas pequenas */
+  }
+
+  .divider-vertical {
+    display: none; /* Esconde a barra vertical em telas pequenas */
+  }
+}
+
+/* Estilo para os botões de redes sociais em linha */
+.social-buttons {
+  display: flex;
+  gap: 1px; /* Define o espaçamento de 1px entre os botões */
+  margin-top: 10px; /* Adiciona um espaçamento superior, caso necessário */
+  justify-content: center; /* Centraliza os botões na linha */
+}
+
+.social-buttons .ant-btn {
+  border-radius: 25px; /* Bordas arredondadas para os botões */
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: 1rem;
+  padding: 8px 16px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.3s ease-in-out;
+  border: 2px solid white; /* Adiciona borda branca aos botões de redes sociais */
+}
+
+.social-buttons .ant-btn:hover {
+  background-color: rgba(255, 255, 255, 0.4); /* Efeito de hover igual aos outros botões */
+  border: 2px solid #f0f0f0; /* Efeito de borda no hover, pode ser ajustado */
+}
+
+/* Responsividade para os botões de redes sociais */
+@media (max-width: 576px) {
+  .social-buttons {
+    flex-direction: column; /* Em telas pequenas, os botões ficam empilhados */
+    align-items: center; /* Alinha os botões ao centro */
+  }
+
+  .social-buttons .ant-btn {
+    margin-bottom: 10px; /* Adiciona um espaçamento entre os botões em telas pequenas */
+  }
+}
