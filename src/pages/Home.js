@@ -28,7 +28,7 @@ const projects = [
   {
     id: 'america',
     title: 'America Rental',
-    description: 'Desenvolvi o site America Rental em colaboração com Murilo Cardoso. Inicialmente feito em PHP pela 4Up, migrei o site para React e depois para Wordpress (2021 a 2024).',
+    description: 'Desenvolvi o site America Rental em colaboração com Murilo Cardoso. Inicialmente feito em PHP pela 4Up, migrei o site para React e depois para Wordpress (2021 a 2024) com auxilio de Luca Botini.',
     projectLink: 'https://americarental.com.br/',
   },
   {
