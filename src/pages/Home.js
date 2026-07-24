@@ -53,6 +53,7 @@ const sectionNavItems = [
   { label: 'Contato', shortLabel: 'Contato', href: '#contato' },
 ];
 
+//ok
 const services = [
   {
     number: '01',
