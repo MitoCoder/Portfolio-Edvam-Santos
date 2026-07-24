@@ -264,7 +264,7 @@ const process = [
 const socialLinks = [
   {
     label: 'LinkedIn',
-    href: 'https://www.linkedin.com/in/edvamdosantos/',
+    href: 'https://www.linkedin.com/in/mycosmus/',
     icon: <LinkedinOutlined />,
   },
   {
