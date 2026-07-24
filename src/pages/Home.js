@@ -545,7 +545,7 @@ function ServiceDetail({ service, onClose }) {
             <p className="service-detail-description">{service.description}</p>
             <a href={whatsappLink} target="_blank" rel="noreferrer">
               <WhatsAppOutlined />
-              Conversar sobre esta solução
+              <span className="button-label">Conversar sobre esta solução</span>
               <ArrowRightOutlined />
             </a>
           </div>
@@ -588,12 +588,50 @@ function ServiceDetail({ service, onClose }) {
 const Home = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeService, setActiveService] = useState(null);
+  const [showFloatingContact, setShowFloatingContact] = useState(true);
   const prefersReducedMotion = useReducedMotion();
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 190, damping: 32 });
   const heroY = useTransform(scrollYProgress, [0, 0.2], [0, 130]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.16], [1, 0.25]);
   const experienceYears = new Date().getFullYear() - 2008;
+
+  useEffect(() => {
+    const previousRestoration = window.history.scrollRestoration;
+
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+
+    const resetScroll = () => window.scrollTo({ top: 0, left: 0 });
+    window.requestAnimationFrame(resetScroll);
+    const scrollResetTimer = window.setTimeout(resetScroll, 120);
+
+    return () => {
+      window.clearTimeout(scrollResetTimer);
+
+      if ('scrollRestoration' in window.history) {
+        window.history.scrollRestoration = previousRestoration;
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!menuOpen) return undefined;
+
+    const previousOverflow = document.body.style.overflow;
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') setMenuOpen(false);
+    };
+
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [menuOpen]);
 
   useEffect(() => {
     if (!activeService) return undefined;
@@ -611,6 +649,25 @@ const Home = () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [activeService]);
+
+  useEffect(() => {
+    const contactSection = document.getElementById('contato');
+    if (!contactSection) return undefined;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setShowFloatingContact(!entry.isIntersecting);
+      },
+      {
+        threshold: 0.08,
+        rootMargin: '0px 0px -18% 0px',
+      }
+    );
+
+    observer.observe(contactSection);
+
+    return () => observer.disconnect();
+  }, []);
 
   const closeMenu = () => setMenuOpen(false);
 
@@ -631,7 +688,8 @@ const Home = () => {
             </a>
           ))}
           <a className="nav-cta" href={whatsappLink} target="_blank" rel="noreferrer">
-            Iniciar projeto <ArrowRightOutlined />
+            <span className="button-label">Iniciar projeto</span>
+            <ArrowRightOutlined />
           </a>
         </nav>
 
@@ -698,7 +756,7 @@ const Home = () => {
           <div className="portrait-halftone" aria-hidden="true" />
           <div className="portrait-label">
             <small>CRIANDO DESDE</small>
-            <strong>2008</strong>
+            <strong>2010</strong>
           </div>
         </motion.div>
       </section>
@@ -833,7 +891,7 @@ const Home = () => {
                   aria-label={`Ver detalhes sobre ${service.title}`}
                   onClick={() => setActiveService(service)}
                 >
-                  <span>Detalhes</span>
+                  <span className="button-label">Detalhes</span>
                   <ArrowRightOutlined />
                 </button>
               </motion.article>
@@ -946,7 +1004,7 @@ const Home = () => {
           <motion.h2 variants={reveal}>Vamos torná-la<br /><span>inesquecível.</span></motion.h2>
           <motion.a variants={reveal} className="contact-button" href={whatsappLink} target="_blank" rel="noreferrer">
             <WhatsAppOutlined />
-            <span>Começar uma conversa</span>
+            <span className="button-label">Começar uma conversa</span>
             <i><ArrowRightOutlined /></i>
           </motion.a>
         </motion.div>
@@ -972,9 +1030,17 @@ const Home = () => {
         )}
       </AnimatePresence>
 
-      <a className="floating-whatsapp" href={whatsappLink} target="_blank" rel="noreferrer" aria-label="Conversar pelo WhatsApp">
+      <a
+        className={showFloatingContact ? 'floating-whatsapp' : 'floating-whatsapp is-hidden'}
+        href={whatsappLink}
+        target="_blank"
+        rel="noreferrer"
+        aria-label="Conversar pelo WhatsApp"
+        aria-hidden={!showFloatingContact}
+        tabIndex={showFloatingContact ? undefined : -1}
+      >
         <WhatsAppOutlined />
-        <span>Vamos conversar</span>
+        <span className="floating-label">Vamos conversar</span>
       </a>
     </main>
   );
