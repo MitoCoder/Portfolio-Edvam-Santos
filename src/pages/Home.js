@@ -1135,7 +1135,7 @@ const Home = () => {
             </div>
           </div>
           <div className="footer-legal" aria-label="Dados empresariais">
-            <span>Dados empresariais</span>
+            <span>Ed's Sistemas &amp; Sites</span>
             <span>CNPJ matriz atual: 60.604.470/0001-96</span>
             <span>CNPJ matriz antiga: 57.810.680/0001-26</span>
           </div>
