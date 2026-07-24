@@ -14,6 +14,7 @@ import {
   MobileOutlined,
   SafetyCertificateOutlined,
   ThunderboltOutlined,
+  UpOutlined,
   WhatsAppOutlined,
 } from '@ant-design/icons';
 import {
@@ -34,6 +35,15 @@ const navItems = [
   { label: 'Cases', href: '#projetos' },
   { label: 'Negócio', href: '#negocio' },
   { label: 'Contato', href: '#contato' },
+];
+
+const sectionNavItems = [
+  { label: 'Início', shortLabel: 'Início', href: '#inicio' },
+  { label: 'Sobre', shortLabel: 'Sobre', href: '#sobre' },
+  { label: 'Negócio', shortLabel: 'Neg.', href: '#negocio' },
+  { label: 'Serviços', shortLabel: 'Serv.', href: '#servicos' },
+  { label: 'Projetos', shortLabel: 'Proj.', href: '#projetos' },
+  { label: 'Contato', shortLabel: 'Contato', href: '#contato' },
 ];
 
 const services = [
@@ -589,12 +599,14 @@ const Home = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeService, setActiveService] = useState(null);
   const [showFloatingContact, setShowFloatingContact] = useState(true);
+  const [activeSection, setActiveSection] = useState('inicio');
+  const [showBackToTop, setShowBackToTop] = useState(false);
   const prefersReducedMotion = useReducedMotion();
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 190, damping: 32 });
   const heroY = useTransform(scrollYProgress, [0, 0.2], [0, 130]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.16], [1, 0.25]);
-  const experienceYears = new Date().getFullYear() - 2008;
+  const experienceYears = new Date().getFullYear() - 2010;
 
   useEffect(() => {
     const previousRestoration = window.history.scrollRestoration;
@@ -669,7 +681,45 @@ const Home = () => {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowBackToTop(window.scrollY > 520);
+    };
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const sections = sectionNavItems
+      .map((item) => document.getElementById(item.href.slice(1)))
+      .filter(Boolean);
+
+    if (!sections.length) return undefined;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visibleEntry = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+        if (visibleEntry) setActiveSection(visibleEntry.target.id);
+      },
+      {
+        threshold: [0.18, 0.35, 0.55],
+        rootMargin: '-22% 0px -42% 0px',
+      }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+
+    return () => observer.disconnect();
+  }, []);
+
   const closeMenu = () => setMenuOpen(false);
+  const scrollToTop = () => window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
 
   return (
     <main className="portfolio">
@@ -682,6 +732,9 @@ const Home = () => {
         </a>
 
         <nav className={menuOpen ? 'main-nav nav-open' : 'main-nav'} aria-label="Navegação principal">
+          <a className="nav-top-link" href="#inicio" onClick={closeMenu}>
+            Topo
+          </a>
           {navItems.map((item) => (
             <a key={item.href} href={item.href} onClick={closeMenu}>
               {item.label}
@@ -703,6 +756,27 @@ const Home = () => {
           {menuOpen ? <CloseOutlined /> : <MenuOutlined />}
         </button>
       </header>
+
+      <nav className="section-bubbles" aria-label="Navegação rápida por seções">
+        {sectionNavItems.map((item, index) => {
+          const sectionId = item.href.slice(1);
+          const isActive = activeSection === sectionId;
+
+          return (
+            <a
+              key={item.href}
+              className={isActive ? 'section-bubble active' : 'section-bubble'}
+              href={item.href}
+              aria-label={`Ir para ${item.label}`}
+              aria-current={isActive ? 'location' : undefined}
+            >
+              <span className="bubble-dot">{String(index + 1).padStart(2, '0')}</span>
+              <span className="bubble-label">{item.label}</span>
+              <span className="bubble-mobile-label">{item.shortLabel}</span>
+            </a>
+          );
+        })}
+      </nav>
 
       <section id="inicio" className="hero">
         <motion.div
@@ -1042,6 +1116,15 @@ const Home = () => {
         <WhatsAppOutlined />
         <span className="floating-label">Vamos conversar</span>
       </a>
+
+      <button
+        className={showBackToTop ? 'back-to-top visible' : 'back-to-top'}
+        type="button"
+        onClick={scrollToTop}
+        aria-label="Voltar ao topo"
+      >
+        <UpOutlined />
+      </button>
     </main>
   );
 };
