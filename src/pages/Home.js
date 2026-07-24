@@ -1,222 +1,982 @@
-import React, { useState, useEffect } from 'react';
-import { Card, Row, Col, Typography, Button, Divider, Image } from 'antd';
-import { GithubOutlined, LinkedinOutlined, FacebookOutlined, WhatsAppOutlined, InstagramOutlined } from '@ant-design/icons';
-import Typewriter from 'typewriter-effect'; // Importa a biblioteca para o efeito de digitação
-import './Home.css'; // Arquivo de CSS para o design personalizado
+import React, { useEffect, useState } from 'react';
+import {
+  ApiOutlined,
+  ArrowDownOutlined,
+  ArrowRightOutlined,
+  CheckOutlined,
+  CloseOutlined,
+  CodeOutlined,
+  GithubOutlined,
+  GlobalOutlined,
+  InstagramOutlined,
+  LinkedinOutlined,
+  MenuOutlined,
+  MobileOutlined,
+  SafetyCertificateOutlined,
+  ThunderboltOutlined,
+  WhatsAppOutlined,
+} from '@ant-design/icons';
+import {
+  AnimatePresence,
+  motion,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+  useTransform,
+} from 'framer-motion';
+import './Home.css';
 
-const { Title, Paragraph } = Typography;
+const whatsappLink =
+  'https://wa.me/5511957207168?text=Ol%C3%A1%2C%20Edvam.%20Vi%20seu%20portf%C3%B3lio%20e%20quero%20conversar%20sobre%20um%20projeto.';
+
+const navItems = [
+  { label: 'Serviços', href: '#servicos' },
+  { label: 'Cases', href: '#projetos' },
+  { label: 'Negócio', href: '#negocio' },
+  { label: 'Contato', href: '#contato' },
+];
+
+const services = [
+  {
+    number: '01',
+    title: 'Experiências digitais',
+    description:
+      'Sites e landing pages com identidade forte, carregamento rápido e estrutura pensada para transformar atenção em conversa.',
+    icon: <GlobalOutlined />,
+    tags: ['UI/UX', 'React', 'Performance'],
+    promise:
+      'Uma presença digital que transmite confiança antes mesmo da primeira conversa.',
+    deliverables: [
+      'Estratégia de conteúdo e arquitetura das páginas',
+      'Interface responsiva com identidade visual própria',
+      'Otimização de performance, SEO técnico e conversão',
+      'Integração com formulários, WhatsApp e ferramentas de análise',
+    ],
+    outcomes: [
+      'Mais credibilidade para apresentar sua empresa',
+      'Jornada mais clara até o pedido de orçamento',
+      'Base preparada para campanhas e crescimento',
+    ],
+    idealFor:
+      'Empresas, profissionais e novos produtos que precisam causar uma primeira impressão forte e transformar visitas em oportunidades.',
+  },
+  {
+    number: '02',
+    title: 'Produtos & sistemas',
+    description:
+      'Dashboards, portais, áreas administrativas e ferramentas sob medida para organizar operações e reduzir trabalho manual.',
+    icon: <CodeOutlined />,
+    tags: ['SaaS', 'Dashboards', 'Full Stack'],
+    promise:
+      'Um sistema desenhado ao redor da sua operação, e não o contrário.',
+    deliverables: [
+      'Mapeamento de usuários, regras e fluxos do negócio',
+      'Painéis administrativos e indicadores relevantes',
+      'Controle de permissões e organização dos dados',
+      'Arquitetura preparada para manutenção e novos módulos',
+    ],
+    outcomes: [
+      'Menos planilhas e controles paralelos',
+      'Mais visibilidade para decisões rápidas',
+      'Processos padronizados e fáceis de acompanhar',
+    ],
+    idealFor:
+      'Operações que cresceram além das ferramentas genéricas e precisam de controle, rastreabilidade e produtividade em um só lugar.',
+  },
+  {
+    number: '03',
+    title: 'Integrações inteligentes',
+    description:
+      'APIs, webhooks e automações que conectam seus serviços, eliminam tarefas repetitivas e fazem os dados circularem.',
+    icon: <ApiOutlined />,
+    tags: ['APIs', 'Serverless', 'Automação'],
+    promise:
+      'Tecnologia trabalhando em segundo plano para sua equipe ganhar tempo e precisão.',
+    deliverables: [
+      'Diagnóstico de tarefas repetitivas e pontos de integração',
+      'Conexão entre sistemas, bancos de dados e serviços externos',
+      'Automação de notificações, cadastros, validações e relatórios',
+      'Monitoramento de falhas e documentação do fluxo',
+    ],
+    outcomes: [
+      'Redução de retrabalho e erros manuais',
+      'Dados consistentes entre diferentes áreas',
+      'Equipe livre para atividades de maior valor',
+    ],
+    idealFor:
+      'Empresas com processos logísticos, financeiros, comerciais ou administrativos que dependem de cópias, conferências e atualizações manuais.',
+  },
+  {
+    number: '04',
+    title: 'Evolução técnica',
+    description:
+      'Modernização de projetos antigos, correção de gargalos e criação de uma base segura para o produto continuar crescendo.',
+    icon: <ThunderboltOutlined />,
+    tags: ['Migração', 'Segurança', 'Escala'],
+    promise:
+      'Evoluir um sistema importante sem perder o que já funciona no negócio.',
+    deliverables: [
+      'Diagnóstico técnico e priorização dos riscos',
+      'Modernização gradual de interface e arquitetura',
+      'Correções de performance, segurança e estabilidade',
+      'Plano de evolução com entregas controladas',
+    ],
+    outcomes: [
+      'Menor risco operacional durante a mudança',
+      'Experiência mais rápida para usuários e equipe',
+      'Código mais simples de manter e expandir',
+    ],
+    idealFor:
+      'Negócios que dependem de sites ou sistemas antigos, lentos ou difíceis de manter, mas não podem interromper a operação.',
+  },
+];
+
+const businessAreas = [
+  {
+    title: 'Logística',
+    text: 'Estoque, compras, locação, movimentações, expedição, transporte, rastreabilidade e indicadores.',
+  },
+  {
+    title: 'Financeiro',
+    text: 'Faturamento, cobranças, aprovações, conciliações, contas a pagar e receber e geração de relatórios.',
+  },
+  {
+    title: 'Operações',
+    text: 'Padronização de rotinas, responsáveis, prazos, alertas, documentos e redução de tarefas manuais.',
+  },
+  {
+    title: 'Gestão',
+    text: 'Dashboards e dados confiáveis para enxergar gargalos, acompanhar desempenho e decidir com segurança.',
+  },
+];
 
 const projects = [
   {
+    id: 'rental',
+    number: '01',
+    title: 'Sistema Gestão',
+    category: 'Locação / Vendas / Gestão',
+    description:
+      'Sistema desenvolvido sob medida para centralizar locações de equipamentos e pedidos de venda. Uma operação completa para o cliente comercializar, locar e acompanhar seus equipamentos em um único ambiente.',
+    tags: ['Locação', 'Pedidos', 'Gestão'],
+  },
+  {
     id: 'serverless',
-    title: 'Serverless no Vercel',
-    description: 'Desenvolvi um projeto utilizando Serverless na plataforma Vercel, separando o backend do frontend para uma arquitetura mais escalável e eficiente (2024).',
-    projectLink: 'https://github.com/MitoCoder/Serverless-Build-Client',
-  },
-  {
-    id: 'gestao',
-    title: 'Sistema de Locação Gestão',
-    description: 'Criei um sistema de locação chamado Sistema Gestão, com funcionalidades avançadas para gerenciamento de aluguel de equipamentos (2024).',
-    projectLink: 'https://sistemagestao.vercel.app/',
-  },
-  {
-    id: 'patchii',
-    title: 'Patchii Decorações',
-    description: 'Desenvolvi em conjunto com a equipe diversas melhorias no sistema IMPACTO para atender as necessidades do PCP utilizando JavaScript, focado em proporcionar uma experiência única para os usuários interessados em decoração (2019).',
-    projectLink: 'https://trssistemas.com.br/sistema-impacto/',
+    number: '02',
+    title: 'Serverless Build',
+    category: 'Arquitetura / Integração',
+    description:
+      'Arquitetura desenvolvida para melhorar a comunicação entre frontend e backend desacoplados, criando integrações mais organizadas, escaláveis e fáceis de manter.',
+    tags: ['Frontend', 'Backend', 'Serverless'],
   },
   {
     id: 'america',
-    title: 'America Rental',
-    description: 'Desenvolvi o site America Rental em colaboração com Murilo Cardoso. Inicialmente feito em PHP pela 4Up, migrei o site para React e depois para Wordpress (2021 a 2024) com auxilio de Luca Botini.',
-    projectLink: 'https://americarental.com.br/',
+    number: '03',
+    title: 'Site America Rental',
+    category: 'Site corporativo / SEO',
+    description:
+      'Site corporativo desenvolvido a partir do design fornecido pelo cliente, com estrutura técnica de SEO, busca orgânica e desempenho para fortalecer a presença digital da empresa.',
+    tags: ['Web Design', 'SEO', 'Performance'],
   },
   {
-    id: 'atos',
-    title: 'Atos Technology SA',
-    description: 'Desenvolvi mais de 25 sites diversos e criei sistemas desktop em C# e JavaScript, além de trabalhar com Android Studio para criar aplicativos. Fui pioneiro em melhorias de segurança nos sistemas e sites criados (2017).',
-    projectLink: '',
+    id: 'control',
+    number: '04',
+    title: 'Sistema Control Tower',
+    category: 'Logística / Torre de controle',
+    description:
+      'Sistema de gerenciamento logístico para torre de controle, com indicadores, gráficos e relatórios de OTIF, SLA, performance e termômetros operacionais para acompanhar a operação em tempo real.',
+    tags: ['Logística', 'OTIF & SLA', 'Indicadores'],
+  },
+  {
+    id: 'grafica',
+    number: '05',
+    title: 'Sistema Less Gráfica',
+    category: 'Indústria gráfica / Otimização',
+    description:
+      'Ferramenta de desenho em Canvas e HTML5 para gráficas, capaz de calcular planos de corte inteligentes para guilhotinas industriais a partir das medidas das folhas e dos materiais.',
+    tags: ['Canvas', 'HTML5', 'Plano de corte'],
+  },
+  {
+    id: 'pitoco',
+    number: '06',
+    title: 'Site Pitoco Magazine',
+    category: 'E-commerce / Conversão',
+    description:
+      'Site de vendas completo com funil direcionado à Kiwify, estrutura de SEO e performance preparada para receber tráfego e cliques de campanhas no Google Ads.',
+    tags: ['Funil de vendas', 'Kiwify', 'Google Ads'],
+  },
+  {
+    id: 'ponto',
+    number: '07',
+    title: 'Super Ponto Manual',
+    category: 'RH / Controle empresarial',
+    description:
+      'Sistema de dataponto empresarial sob medida para controle interno, apoio a auditorias, rastreabilidade de alterações e manutenção de históricos duradouros relacionados à jornada de trabalho.',
+    tags: ['Dataponto', 'Auditoria', 'Históricos'],
+  },
+  {
+    id: 'pcp',
+    number: '08',
+    title: 'Sistema de PCP',
+    category: 'Engenharia de produção',
+    description:
+      'Controle completo para planejamento e acompanhamento da produção, com KPIs, hora-máquina, hora-homem, planejamento automático, ordens de produção e integração com a gestão de estoque.',
+    tags: ['PCP', 'Produção', 'Estoque'],
+  },
+];
+
+const capabilities = [
+  'React',
+  'JavaScript',
+  'Node.js',
+  'APIs REST',
+  'WordPress',
+  'Vercel',
+  'SQL',
+  'C#',
+  'Android',
+  'GitHub',
+];
+
+const process = [
+  {
+    number: '01',
+    title: 'Mergulho',
+    text: 'Entendo o negócio, o público e o resultado que realmente importa.',
+  },
+  {
+    number: '02',
+    title: 'Direção',
+    text: 'Transformo as ideias em fluxo, arquitetura, conteúdo e linguagem visual.',
+  },
+  {
+    number: '03',
+    title: 'Construção',
+    text: 'Desenvolvo, testo e lapido cada interação em telas grandes e pequenas.',
+  },
+  {
+    number: '04',
+    title: 'Impulso',
+    text: 'Coloco no ar e deixo a base pronta para medir, aprender e evoluir.',
   },
 ];
 
 const socialLinks = [
   {
-    href: "https://www.facebook.com/mycosmus",
-    icon: <FacebookOutlined />,
-    key: "facebook",
-    label: "Facebook",
+    label: 'LinkedIn',
+    href: 'https://www.linkedin.com/in/edvamdosantos/',
+    icon: <LinkedinOutlined />,
   },
   {
-    href: "https://wa.me/5511957207168",
-    icon: <WhatsAppOutlined />,
-    key: "whatsapp",
-    label: "WhatsApp",
-  },
-  {
-    href: "https://www.github.com/MitoCoder",
+    label: 'GitHub',
+    href: 'https://www.github.com/MitoCoder',
     icon: <GithubOutlined />,
-    key: "github",
-    label: "GitHub",
   },
   {
-    href: "https://www.instagram.com/mycosmus",
+    label: 'Instagram',
+    href: 'https://www.instagram.com/mycosmus',
     icon: <InstagramOutlined />,
-    key: "instagram",
-    label: "Instagram",
   },
 ];
 
-const Home = () => {
-  const [language, setLanguage] = useState('pt'); // Estado para controlar o idioma
-  const [photoUrl, setPhotoUrl] = useState(null); // Estado para armazenar a URL da foto
+const reveal = {
+  hidden: { opacity: 0, y: 14 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.42, ease: [0.22, 1, 0.36, 1] },
+  },
+};
 
-  // Função para alternar entre idiomas
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setLanguage((prev) => (prev === 'pt' ? 'en' : prev === 'en' ? 'es' : 'pt'));
-    }, 5000); // Alterna o idioma a cada 5 segundos
-    return () => clearInterval(interval); // Limpeza do intervalo
-  }, []);
+const stagger = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.045 } },
+};
 
-  // Função para buscar a foto do GitHub
-  useEffect(() => {
-    const storedPhoto = localStorage.getItem('githubPhoto'); // Verifica se a foto já foi salva
-
-    if (storedPhoto) {
-      setPhotoUrl(storedPhoto); // Se já existe, usa a foto do localStorage
-    } else {
-      // Caso contrário, faz a requisição à API do GitHub
-      fetch('https://api.github.com/users/MitoCoder') // Alterando para "users" para pegar a foto
-        .then(response => response.json())
-        .then(data => {
-          const photo = data.avatar_url; // Foto do usuário do GitHub
-          localStorage.setItem('githubPhoto', photo); // Armazena a foto no localStorage
-          setPhotoUrl(photo); // Atualiza o estado da foto
-        })
-        .catch(err => console.error('Erro ao buscar foto do GitHub:', err));
-    }
-  }, []);
-
-  const titleText = {
-    pt: 'Port. Edvam',
-    en: 'Hii, I am Edvam',
-    es: 'Hola, Soy Edvam'
-  };
-
-  const descriptionText = {
-    pt: 'Desenvolvedor Full Stack com foco em React, JavaScript, e sistemas escaláveis. Com experiência em mais de 25 projetos ao longo dos anos, sou apaixonado por transformar ideias em soluções digitais incríveis.',
-    en: 'Full Stack Developer focused on React, JavaScript, and scalable systems. With experience in over 25 projects over the years, I am passionate about turning ideas into amazing digital solutions.',
-    es: 'Desarrollador Full Stack enfocado en React, JavaScript y sistemas escalables. Con experiencia en más de 25 proyectos a lo largo de los años, me apasiona convertir ideas en soluciones digitales increíbles.'
-  };
-
-  const sectionTitleText = {
-    pt: 'Vamos Conversar?',
-    en: 'Let\'s Talk?',
-    es: 'Hablemos?'
-  };
-
-  return (
-    <div className="home-container">
-      <div className="content">
-        {/* Seção de Introdução */}
-        <section className="intro-section">
-          {/* Exibição da foto do GitHub no topo */}
-          {photoUrl && (
-            <div className="profile-info">
-              <div className="profile-photo">
-                <Image src={photoUrl} alt="Foto do GitHub" width={120} height={120} style={{ borderRadius: '50%' }} />
-              </div>
-              <div className="divider-vertical"></div> {/* Barra de separação vertical */}
-              <div className="profile-text">
-                {/* Título com efeito de digitação */}
-                <Title level={2} className="title" style={{ color: 'white' }}>
-                  <Typewriter
-                    options={{
-                      strings: [titleText.pt, titleText.en, titleText.es], // Alterna entre os idiomas
-                      autoStart: true,
-                      loop: true,
-                      deleteSpeed: 50,
-                      delay: 110,
-                    }}
-                  />
-                </Title>
-
-                {/* Descrição com animação */}
-                <Paragraph className="description">
-                  {descriptionText[language]}
-                </Paragraph>
-                <Button className="btn-contact" icon={<GithubOutlined />} href="https://github.com/MitoCoder" target="_blank">
-                  Visite meu GitHub
-                </Button>
-              </div>
+function ProjectVisual({ project }) {
+  if (project.id === 'rental') {
+    return (
+      <div className="project-mockup rental-mockup" aria-hidden="true">
+        <div className="mock-sidebar">
+          <span className="mock-logo">SG</span>
+          {[1, 2, 3, 4, 5].map((item) => <i key={item} />)}
+        </div>
+        <div className="mock-main">
+          <div className="mock-topbar">
+            <span>Painel de operação</span>
+            <i />
+          </div>
+          <div className="mock-stats">
+            <div><small>Contratos ativos</small><strong>148</strong><em>+12%</em></div>
+            <div><small>Equipamentos</small><strong>392</strong><em>98% ok</em></div>
+            <div><small>Receita mensal</small><strong>R$ 84k</strong><em>+8.4%</em></div>
+          </div>
+          <div className="mock-chart">
+            <span>Visão do mês</span>
+            <div className="chart-bars">
+              {[44, 62, 48, 78, 55, 88, 72, 96, 68, 82].map((height, index) => (
+                <i key={index} style={{ '--bar-height': `${height}%` }} />
+              ))}
             </div>
-          )}
-        </section>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-        <Divider />
+  if (project.id === 'serverless') {
+    return (
+      <div className="project-mockup serverless-mockup" aria-hidden="true">
+        <div className="terminal-bar">
+          <div><i /><i /><i /></div>
+          <span>edvam@cloud: ~/build</span>
+        </div>
+        <div className="terminal-body">
+          <p><b>$</b> npm run deploy</p>
+          <p><span>✓</span> Building frontend...</p>
+          <p><span>✓</span> Connecting API routes...</p>
+          <p><span>✓</span> Optimizing edge functions...</p>
+          <p><span>✓</span> Production ready in 8.4s</p>
+          <div className="architecture">
+            <strong>CLIENT</strong><i /><strong>API</strong><i /><strong>EDGE</strong>
+          </div>
+          <p className="terminal-ready">● LIVE — global network</p>
+        </div>
+      </div>
+    );
+  }
 
-        {/* Seção de Projetos */}
-        <section className="projects-section">
-          <Title level={3} style={{ color: 'white' }} className="section-title">Projetos Recentes</Title>
-          <Row gutter={[16, 16]} justify="center">
-            {projects.map((project) => (
-              <Col key={project.id} xs={24} sm={12} md={8}>
-                <Card
-                  hoverable
-                  className="card"
-                  title={project.title}
-                  extra={project.projectLink ? <a href={project.projectLink} target="_blank" rel="noopener noreferrer">Ver Projeto</a> : null}
-                >
-                  <Paragraph>{project.description}</Paragraph>
-                </Card>
-              </Col>
-            ))}
-          </Row>
-        </section>
+  if (project.id === 'america') {
+    return (
+      <div className="project-mockup america-mockup" aria-hidden="true">
+        <div className="america-nav">
+          <strong>AMERICA<span>RENTAL</span></strong>
+          <div><i /><i /><i /></div>
+        </div>
+        <div className="america-stage">
+          <div className="machine-shape">
+            <i className="machine-boom" />
+            <i className="machine-cabin" />
+            <i className="machine-wheel wheel-one" />
+            <i className="machine-wheel wheel-two" />
+          </div>
+          <div className="america-copy">
+            <small>EQUIPAMENTOS PARA ELEVAÇÃO</small>
+            <strong>Vá mais alto.</strong>
+            <span>Locação ágil para sua obra não parar.</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-        <Divider />
-
-        {/* Seção de Contato */}
-        <section className="contact-section">
-          <Title level={2} className="section-title" style={{ color: 'white' }}>
-            <Typewriter
-              options={{
-                strings: [sectionTitleText.pt, sectionTitleText.en, sectionTitleText.es], // Alterna entre os idiomas
-                autoStart: true,
-                loop: true,
-                deleteSpeed: 50,
-                delay: 100
-              }}
-            />
-          </Title>
-          {/* Botão de LinkedIn dentro do grupo de botões sociais */}
-          <div className="social-buttons">
-            <Button
-              className="btn-contact"
-              icon={<LinkedinOutlined />}
-              href="https://www.linkedin.com/in/edvamdosantos/"
-              target="_blank"
-              style={{ marginRight: '1px' }}
-            >
-              Conectar no LinkedIn
-            </Button>
-
-            {/* Botões das redes sociais em linha com espaçamento de 1px */}
-            {socialLinks.map((link) => (
-              <Button
-                key={link.key}
-                icon={link.icon}
-                href={link.href}
-                target="_blank"
-                style={{ marginRight: '1px' }}
-              >
-                {link.label}
-              </Button>
+  if (project.id === 'control') {
+    return (
+      <div className="project-mockup control-mockup" aria-hidden="true">
+        <div className="control-topbar">
+          <strong>CONTROL TOWER</strong>
+          <span>OPERAÇÃO AO VIVO <i /></span>
+        </div>
+        <div className="control-grid">
+          <div className="control-kpis">
+            <div><small>OTIF</small><strong>96.4%</strong><span>+2.8%</span></div>
+            <div><small>SLA</small><strong>98.1%</strong><span>no prazo</span></div>
+            <div><small>ENTREGAS</small><strong>1.248</strong><span>este mês</span></div>
+          </div>
+          <div className="control-route">
+            <span>FLUXO OPERACIONAL</span>
+            <div className="route-line">
+              {[1, 2, 3, 4, 5].map((item) => <i key={item} />)}
+            </div>
+          </div>
+          <div className="control-thermometers">
+            {[84, 68, 92, 76].map((value, index) => (
+              <div key={value}>
+                <span>OP {index + 1}</span>
+                <i><b style={{ '--meter': `${value}%` }} /></i>
+                <strong>{value}%</strong>
+              </div>
             ))}
           </div>
-        </section>
+        </div>
+      </div>
+    );
+  }
+
+  if (project.id === 'grafica') {
+    return (
+      <div className="project-mockup grafica-mockup" aria-hidden="true">
+        <div className="grafica-toolbar">
+          <strong>LESS / PLANO DE CORTE</strong>
+          <div><span>1200 × 800 mm</span><i /><i /><i /></div>
+        </div>
+        <div className="grafica-stage">
+          <div className="cut-sheet">
+            <span className="cut-a">A</span>
+            <span className="cut-b">B</span>
+            <span className="cut-c">C</span>
+            <span className="cut-d">D</span>
+            <span className="cut-e">E</span>
+          </div>
+          <div className="cut-summary">
+            <small>APROVEITAMENTO</small>
+            <strong>94.8%</strong>
+            <span>Plano otimizado</span>
+            <div><i /><i /><i /></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (project.id === 'pitoco') {
+    return (
+      <div className="project-mockup pitoco-mockup" aria-hidden="true">
+        <div className="pitoco-nav">
+          <strong>PITOCO<span>MAGAZINE</span></strong>
+          <div><i /><i /><i /></div>
+        </div>
+        <div className="pitoco-hero">
+          <div>
+            <small>OFERTA ESPECIAL</small>
+            <strong>Seu pet merece o melhor.</strong>
+            <span>Compra segura e entrega rápida.</span>
+            <b>QUERO APROVEITAR</b>
+          </div>
+          <div className="pet-product">
+            <i /><strong>PITOCO</strong><span>premium</span>
+          </div>
+        </div>
+        <div className="pitoco-proof">
+          <span>Compra segura</span><span>Entrega rápida</span><span>Oferta exclusiva</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (project.id === 'ponto') {
+    return (
+      <div className="project-mockup ponto-mockup" aria-hidden="true">
+        <div className="ponto-sidebar">
+          <strong>SP</strong>
+          {[1, 2, 3, 4].map((item) => <i key={item} />)}
+        </div>
+        <div className="ponto-main">
+          <div className="ponto-heading"><span>Controle de jornada</span><i /></div>
+          <div className="ponto-profile">
+            <i /><div><strong>Equipe operacional</strong><span>128 colaboradores</span></div>
+            <b>REGULAR</b>
+          </div>
+          <div className="ponto-week">
+            {[72, 88, 64, 92, 78].map((height, index) => (
+              <div key={height}><i style={{ '--point-height': `${height}%` }} /><span>{['SEG', 'TER', 'QUA', 'QUI', 'SEX'][index]}</span></div>
+            ))}
+          </div>
+          <div className="ponto-audit"><span>Última auditoria</span><strong>Sem divergências críticas</strong></div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="project-mockup pcp-mockup" aria-hidden="true">
+      <div className="pcp-topbar">
+        <strong>PCP / PLANEJAMENTO</strong>
+        <span>SEMANA 32</span>
+      </div>
+      <div className="pcp-layout">
+        <div className="pcp-stats">
+          <div><small>O.P. ABERTAS</small><strong>42</strong></div>
+          <div><small>EFICIÊNCIA</small><strong>91%</strong></div>
+          <div><small>HORA-MÁQUINA</small><strong>384h</strong></div>
+        </div>
+        <div className="pcp-schedule">
+          <span>PROGRAMAÇÃO DA PRODUÇÃO</span>
+          {[82, 58, 90, 66, 74].map((width, index) => (
+            <div key={width}><small>OP-{1040 + index}</small><i><b style={{ '--schedule': `${width}%` }} /></i><strong>{width}%</strong></div>
+          ))}
+        </div>
+        <div className="pcp-stock">
+          <span>ESTOQUE</span>
+          <div><i /><i /><i /><i /><i /><i /></div>
+          <strong>Materiais sincronizados</strong>
+        </div>
       </div>
     </div>
+  );
+}
+
+function ServiceDetail({ service, onClose }) {
+  return (
+    <motion.div
+      className="service-detail-backdrop"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.14 }}
+      role="presentation"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
+    >
+      <motion.section
+        className="service-detail-screen"
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 16 }}
+        transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={`service-title-${service.number}`}
+      >
+        <header className="service-detail-header">
+          <span>E/S — SOLUÇÃO {service.number}</span>
+          <button type="button" onClick={onClose} aria-label="Fechar detalhes" autoFocus>
+            <CloseOutlined />
+          </button>
+        </header>
+
+        <div className="service-detail-layout">
+          <div className="service-detail-lead">
+            <span className="service-detail-icon">{service.icon}</span>
+            <p>{service.number} / 04</p>
+            <h2 id={`service-title-${service.number}`}>{service.title}</h2>
+            <strong>{service.promise}</strong>
+            <p className="service-detail-description">{service.description}</p>
+            <a href={whatsappLink} target="_blank" rel="noreferrer">
+              <WhatsAppOutlined />
+              Conversar sobre esta solução
+              <ArrowRightOutlined />
+            </a>
+          </div>
+
+          <div className="service-detail-content">
+            <div className="service-detail-group">
+              <span>O que pode fazer parte</span>
+              <ul>
+                {service.deliverables.map((item) => (
+                  <li key={item}><CheckOutlined /> {item}</li>
+                ))}
+              </ul>
+            </div>
+            <div className="service-detail-group">
+              <span>Impacto esperado</span>
+              <ul>
+                {service.outcomes.map((item) => (
+                  <li key={item}><CheckOutlined /> {item}</li>
+                ))}
+              </ul>
+            </div>
+            <div className="service-detail-group service-detail-ideal">
+              <span>Faz sentido para</span>
+              <p>{service.idealFor}</p>
+            </div>
+            <div className="service-detail-assurance">
+              <SafetyCertificateOutlined />
+              <p>
+                Escopo claro, comunicação direta e evolução validada por etapas.
+                Você acompanha as decisões e sabe o que está sendo construído.
+              </p>
+            </div>
+          </div>
+        </div>
+      </motion.section>
+    </motion.div>
+  );
+}
+
+const Home = () => {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [activeService, setActiveService] = useState(null);
+  const prefersReducedMotion = useReducedMotion();
+  const { scrollYProgress } = useScroll();
+  const progress = useSpring(scrollYProgress, { stiffness: 190, damping: 32 });
+  const heroY = useTransform(scrollYProgress, [0, 0.2], [0, 130]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.16], [1, 0.25]);
+  const experienceYears = new Date().getFullYear() - 2008;
+
+  useEffect(() => {
+    if (!activeService) return undefined;
+
+    const previousOverflow = document.body.style.overflow;
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') setActiveService(null);
+    };
+
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [activeService]);
+
+  const closeMenu = () => setMenuOpen(false);
+
+  return (
+    <main className="portfolio">
+      <motion.div className="scroll-progress" style={{ scaleX: progress }} />
+
+      <header className="site-header">
+        <a className="brand" href="#inicio" aria-label="Voltar ao início">
+          <span className="brand-symbol">E/S</span>
+          <span className="brand-name">Edvam Santos</span>
+        </a>
+
+        <nav className={menuOpen ? 'main-nav nav-open' : 'main-nav'} aria-label="Navegação principal">
+          {navItems.map((item) => (
+            <a key={item.href} href={item.href} onClick={closeMenu}>
+              {item.label}
+            </a>
+          ))}
+          <a className="nav-cta" href={whatsappLink} target="_blank" rel="noreferrer">
+            Iniciar projeto <ArrowRightOutlined />
+          </a>
+        </nav>
+
+        <button
+          className="menu-button"
+          type="button"
+          aria-label={menuOpen ? 'Fechar menu' : 'Abrir menu'}
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen((current) => !current)}
+        >
+          {menuOpen ? <CloseOutlined /> : <MenuOutlined />}
+        </button>
+      </header>
+
+      <section id="inicio" className="hero">
+        <motion.div
+          className="hero-background-type"
+          style={prefersReducedMotion ? undefined : { y: heroY, opacity: heroOpacity }}
+          aria-hidden="true"
+        >
+          <span>EDVAM</span>
+          <span>SANTOS</span>
+        </motion.div>
+
+        <motion.div
+          className="hero-topline"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.38 }}
+        >
+          <span>Full Stack Developer</span>
+          <span>São Paulo — Brasil</span>
+          <span className="available"><i /> Disponível para projetos</span>
+        </motion.div>
+
+        <motion.div className="hero-content" variants={stagger} initial="hidden" animate="visible">
+          <motion.p variants={reveal} className="hero-kicker">
+            Ideias ambiciosas merecem<br />execução à altura.
+          </motion.p>
+          <motion.h1 variants={reveal}>
+            Eu projeto e construo
+            <span> experiências digitais</span>
+            que ninguém ignora.
+          </motion.h1>
+          <motion.div variants={reveal} className="hero-bottom">
+            <p>
+              Sites, sistemas e automações que unem direção visual, engenharia
+              e estratégia para fazer negócios avançarem.
+            </p>
+            <a className="magnetic-link" href="#projetos">
+              <span>Ver o que eu construo</span>
+              <i><ArrowDownOutlined /></i>
+            </a>
+          </motion.div>
+        </motion.div>
+
+        <motion.div
+          className="hero-portrait"
+          initial={{ opacity: 0, y: 12, scale: 0.992 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.48, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <img src="https://github.com/MitoCoder.png" alt="Edvam Santos" />
+          <div className="portrait-halftone" aria-hidden="true" />
+          <div className="portrait-label">
+            <small>CRIANDO DESDE</small>
+            <strong>2008</strong>
+          </div>
+        </motion.div>
+      </section>
+
+      <div className="ticker" aria-label="Especialidades">
+        <div className="ticker-track">
+          {[...capabilities, ...capabilities].map((item, index) => (
+            <React.Fragment key={`${item}-${index}`}>
+              <span>{item}</span><i>✦</i>
+            </React.Fragment>
+          ))}
+        </div>
+      </div>
+
+      <section id="sobre" className="manifesto content-width">
+        <motion.div className="section-index" variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}>
+          <span>01</span>
+          <p>O que me move</p>
+        </motion.div>
+        <motion.div className="manifesto-copy" variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.12 }}>
+          <h2>
+            Não faço “só um site”. Eu transformo uma ideia em uma presença
+            digital <em>impossível de confundir.</em>
+          </h2>
+          <div className="manifesto-support">
+            <p>
+              Minha abordagem cruza tecnologia, design e visão de produto. Cada
+              escolha precisa ter uma razão: chamar atenção, facilitar uma
+              decisão ou mover o negócio para frente.
+            </p>
+            <a href={whatsappLink} target="_blank" rel="noreferrer">
+              Conte sua ideia <ArrowRightOutlined />
+            </a>
+          </div>
+        </motion.div>
+        <motion.div className="numbers" variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.12 }}>
+          <motion.div variants={reveal}><strong>{experienceYears}+</strong><span>anos entre processos,<br />código e produto</span></motion.div>
+          <motion.div variants={reveal}><strong>25+</strong><span>experiências<br />entregues</span></motion.div>
+          <motion.div variants={reveal}><strong>360º</strong><span>da estratégia<br />ao deploy</span></motion.div>
+        </motion.div>
+      </section>
+
+      <section id="negocio" className="business-section">
+        <div className="content-width">
+          <div className="section-index">
+            <span>02</span>
+            <p>Visão de negócio</p>
+          </div>
+          <div className="business-layout">
+            <motion.div
+              className="business-copy"
+              variants={reveal}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.14 }}
+            >
+              <span className="micro-label">FORMAÇÃO EM LOGÍSTICA</span>
+              <h2>Eu entendo o processo antes de automatizá-lo.</h2>
+              <p>
+                Minha formação em Logística amplia a forma como desenvolvo
+                sistemas para empresas. Antes de pensar em telas e código, eu
+                consigo compreender fluxo, prazo, custo, responsabilidade,
+                exceção e indicador.
+              </p>
+              <p>
+                Essa visão facilita o diálogo com áreas operacionais e permite
+                transformar rotinas logísticas, financeiras e administrativas
+                em soluções digitais mais coerentes com o trabalho real.
+              </p>
+              <div className="business-assurance">
+                <SafetyCertificateOutlined />
+                <span>
+                  Menos tempo explicando o básico da operação. Mais foco no que
+                  precisa ser melhorado, controlado e escalado.
+                </span>
+              </div>
+            </motion.div>
+
+            <motion.div
+              className="business-areas"
+              variants={stagger}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.1 }}
+            >
+              {businessAreas.map((area, index) => (
+                <motion.article key={area.title} variants={reveal}>
+                  <span>{String(index + 1).padStart(2, '0')}</span>
+                  <h3>{area.title}</h3>
+                  <p>{area.text}</p>
+                </motion.article>
+              ))}
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      <section id="servicos" className="services-section">
+        <div className="content-width">
+          <div className="section-index light-index">
+            <span>03</span>
+            <p>O que eu construo</p>
+          </div>
+          <div className="services-heading">
+            <motion.h2 variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.16 }}>
+              Código é ferramenta.<br /><span>Impacto é o objetivo.</span>
+            </motion.h2>
+            <p>Do primeiro pixel à infraestrutura.</p>
+          </div>
+          <div className="service-list">
+            {services.map((service) => (
+              <motion.article
+                className="service-row"
+                key={service.number}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.12 }}
+                transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <span className="service-number">{service.number}</span>
+                <div className="service-title">
+                  <i>{service.icon}</i>
+                  <h3>{service.title}</h3>
+                </div>
+                <p>{service.description}</p>
+                <div className="service-tags">
+                  {service.tags.map((tag) => <span key={tag}>{tag}</span>)}
+                </div>
+                <button
+                  className="service-arrow"
+                  type="button"
+                  aria-label={`Ver detalhes sobre ${service.title}`}
+                  onClick={() => setActiveService(service)}
+                >
+                  <span>Detalhes</span>
+                  <ArrowRightOutlined />
+                </button>
+              </motion.article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="projetos" className="projects-section">
+        <div className="content-width">
+          <div className="section-index">
+            <span>04</span>
+            <p>Projetos selecionados</p>
+          </div>
+          <motion.div className="projects-intro" variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.14 }}>
+            <h2>Trabalho que<br /><em>fala por si.</em></h2>
+            <p>Algumas entregas, decisões e problemas que transformei em produto.</p>
+          </motion.div>
+        </div>
+
+        <div className="project-stack">
+          {projects.map((project, index) => (
+            <article
+              className={`case-study case-${project.id}`}
+              key={project.id}
+            >
+              <motion.div
+                className="case-info"
+                variants={reveal}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.12 }}
+              >
+                <span className="case-number">
+                  {project.number} / {String(projects.length).padStart(2, '0')}
+                </span>
+                <p className="case-category">{project.category}</p>
+                <h3>{project.title}</h3>
+                <p className="case-description">{project.description}</p>
+                <div className="case-tags">
+                  {project.tags.map((tag) => <span key={tag}>{tag}</span>)}
+                </div>
+              </motion.div>
+              <motion.div
+                className="case-visual-wrap"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.1 }}
+                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <ProjectVisual project={project} />
+                <span className="case-watermark">{String(index + 1).padStart(2, '0')}</span>
+              </motion.div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="expertise-section">
+        <div className="content-width expertise-grid">
+          <motion.div className="expertise-copy" variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.14 }}>
+            <span className="micro-label">TECNOLOGIA COM PROPÓSITO</span>
+            <h2>Amplo o bastante para construir. Profundo o bastante para resolver.</h2>
+            <p>
+              Escolho tecnologia pelo problema, não pela moda. O resultado é
+              uma solução mais simples de usar, manter e expandir.
+            </p>
+          </motion.div>
+          <motion.div className="capability-cloud" variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.12 }}>
+            {capabilities.map((item, index) => (
+              <motion.span key={item} variants={reveal} className={index % 4 === 0 ? 'accent-capability' : ''}>
+                {item}
+              </motion.span>
+            ))}
+          </motion.div>
+        </div>
+        <div className="expertise-proof content-width">
+          <span><MobileOutlined /> Responsivo de verdade</span>
+          <span><SafetyCertificateOutlined /> Base segura e sustentável</span>
+          <span><ThunderboltOutlined /> Performance como padrão</span>
+          <span><CheckOutlined /> Entrega pronta para uso real</span>
+        </div>
+      </section>
+
+      <section id="processo" className="process-section content-width">
+        <div className="section-index">
+          <span>05</span>
+          <p>Como acontece</p>
+        </div>
+        <motion.div className="process-heading" variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.16 }}>
+          <h2>Da conversa<br />ao <em>mundo real.</em></h2>
+          <p>Um processo direto, colaborativo e sem caixa-preta.</p>
+        </motion.div>
+        <div className="process-list">
+          {process.map((item) => (
+            <motion.article key={item.number} variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.14 }}>
+              <span>{item.number}</span>
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
+            </motion.article>
+          ))}
+        </div>
+      </section>
+
+      <section id="contato" className="contact-section">
+        <div className="contact-orbit orbit-one" aria-hidden="true" />
+        <div className="contact-orbit orbit-two" aria-hidden="true" />
+        <motion.div className="contact-content" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.12 }} variants={stagger}>
+          <motion.p variants={reveal}>TEM UMA IDEIA NA CABEÇA?</motion.p>
+          <motion.h2 variants={reveal}>Vamos torná-la<br /><span>inesquecível.</span></motion.h2>
+          <motion.a variants={reveal} className="contact-button" href={whatsappLink} target="_blank" rel="noreferrer">
+            <WhatsAppOutlined />
+            <span>Começar uma conversa</span>
+            <i><ArrowRightOutlined /></i>
+          </motion.a>
+        </motion.div>
+        <footer>
+          <div className="footer-brand"><strong>E/S</strong><span>Edvam Santos<br />Full Stack Developer</span></div>
+          <p>© {new Date().getFullYear()} — Feito com intenção e código.</p>
+          <div className="footer-socials">
+            {socialLinks.map((social) => (
+              <a key={social.label} href={social.href} target="_blank" rel="noreferrer" aria-label={social.label}>
+                {social.icon}
+              </a>
+            ))}
+          </div>
+        </footer>
+      </section>
+
+      <AnimatePresence>
+        {activeService && (
+          <ServiceDetail
+            service={activeService}
+            onClose={() => setActiveService(null)}
+          />
+        )}
+      </AnimatePresence>
+
+      <a className="floating-whatsapp" href={whatsappLink} target="_blank" rel="noreferrer" aria-label="Conversar pelo WhatsApp">
+        <WhatsAppOutlined />
+        <span>Vamos conversar</span>
+      </a>
+    </main>
   );
 };
 

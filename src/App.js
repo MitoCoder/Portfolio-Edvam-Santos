@@ -9,7 +9,7 @@ const { Content } = Layout;
 function App() {
   return (
     <Layout className="layout">
-      <Content style={{ padding: '0' }}> {/* Removemos o padding aqui */}
+      <Content style={{ padding: '0' }}>
         <div className="site-layout-content">
           <Home />
         </div>
