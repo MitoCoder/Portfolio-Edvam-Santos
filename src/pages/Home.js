@@ -36,6 +36,12 @@ const navItems = [
   { label: 'Cases', href: '#projetos' },
   { label: 'Negócio', href: '#negocio' },
   { label: 'Contato', href: '#contato' },
+  {
+    label: 'Mapa do Site',
+    href: '/mapa-do-site-e-seo/',
+    className: 'nav-map-link',
+    icon: <FileSearchOutlined />,
+  },
 ];
 
 const sectionNavItems = [
@@ -737,7 +743,13 @@ const Home = () => {
             Topo
           </a>
           {navItems.map((item) => (
-            <a key={item.href} href={item.href} onClick={closeMenu}>
+            <a
+              key={item.href}
+              className={item.className}
+              href={item.href}
+              onClick={closeMenu}
+            >
+              {item.icon}
               {item.label}
             </a>
           ))}
@@ -759,24 +771,26 @@ const Home = () => {
       </header>
 
       <nav className="section-bubbles" aria-label="Navegação rápida por seções">
-        {sectionNavItems.map((item, index) => {
-          const sectionId = item.href.slice(1);
-          const isActive = activeSection === sectionId;
+        <div className="section-bubbles-list">
+          {sectionNavItems.map((item, index) => {
+            const sectionId = item.href.slice(1);
+            const isActive = activeSection === sectionId;
 
-          return (
-            <a
-              key={item.href}
-              className={isActive ? 'section-bubble active' : 'section-bubble'}
-              href={item.href}
-              aria-label={`Ir para ${item.label}`}
-              aria-current={isActive ? 'location' : undefined}
-            >
-              <span className="bubble-dot">{String(index + 1).padStart(2, '0')}</span>
-              <span className="bubble-label">{item.label}</span>
-              <span className="bubble-mobile-label">{item.shortLabel}</span>
-            </a>
-          );
-        })}
+            return (
+              <a
+                key={item.href}
+                className={isActive ? 'section-bubble active' : 'section-bubble'}
+                href={item.href}
+                aria-label={`Ir para ${item.label}`}
+                aria-current={isActive ? 'location' : undefined}
+              >
+                <span className="bubble-dot">{String(index + 1).padStart(2, '0')}</span>
+                <span className="bubble-label">{item.label}</span>
+                <span className="bubble-mobile-label">{item.shortLabel}</span>
+              </a>
+            );
+          })}
+        </div>
       </nav>
 
       <section id="inicio" className="hero">
@@ -1090,18 +1104,35 @@ const Home = () => {
           </motion.a>
         </motion.div>
         <footer>
-          <div className="footer-brand"><strong>E/S</strong><span>Edvam Santos<br />Full Stack Developer</span></div>
-          <p>© {new Date().getFullYear()} — Feito com intenção e código.</p>
-          <a className="footer-sitemap" href="/mapa-do-site-e-seo/">
-            <FileSearchOutlined />
-            Mapa do Site e SEO
-          </a>
-          <div className="footer-socials">
-            {socialLinks.map((social) => (
-              <a key={social.label} href={social.href} target="_blank" rel="noreferrer" aria-label={social.label}>
-                {social.icon}
-              </a>
-            ))}
+          <div className="footer-identity">
+            <div className="footer-brand">
+              <strong className="footer-brand-symbol">E/S</strong>
+              <span>Edvam Santos<br />Full Stack Developer</span>
+            </div>
+            <p>© {new Date().getFullYear()} — Feito com intenção e código.</p>
+          </div>
+          <nav className="footer-map-section" aria-label="Mapa do site">
+            <strong>Mapa do Site</strong>
+            <div>
+              {sectionNavItems.map((item) => (
+                <a key={item.href} href={item.href}>{item.label}</a>
+              ))}
+              <a href="#processo">Processo</a>
+            </div>
+          </nav>
+          <div className="footer-actions">
+            <a className="footer-map-button" href="/mapa-do-site-e-seo/">
+              <FileSearchOutlined />
+              <span className="footer-map-full">Mapa do Site e SEO</span>
+              <span className="footer-map-short">Mapa</span>
+            </a>
+            <div className="footer-socials" aria-label="Redes sociais">
+              {socialLinks.map((social) => (
+                <a key={social.label} href={social.href} target="_blank" rel="noreferrer" aria-label={social.label}>
+                  {social.icon}
+                </a>
+              ))}
+            </div>
           </div>
         </footer>
       </section>

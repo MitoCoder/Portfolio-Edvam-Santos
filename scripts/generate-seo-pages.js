@@ -213,7 +213,7 @@ function staticMapPage() {
           <header><div><span>ÍNDICE COMPLETO</span><h2>Explore os temas</h2></div></header>
           <div class="map-clusters">
             ${catalog.clusters.map((cluster, clusterIndex) => `
-              <section class="map-cluster">
+              <section class="map-cluster${clusterIndex === 0 ? ' expanded' : ''}">
                 <header><span>${String(clusterIndex + 1).padStart(2, '0')}</span><div><h3>${escapeHtml(cluster.title)}</h3><p>${escapeHtml(cluster.solution)}. Foco em ${escapeHtml(cluster.result)}.</p><div class="map-cluster-keywords"><span>${escapeHtml(cluster.keyword)}</span>${cluster.technologies.map((technology) => `<span>${escapeHtml(technology)}</span>`).join('')}</div></div><strong>${catalog.pagesByCluster[cluster.slug].length}</strong></header>
                 <div class="map-groups">
                   ${Object.entries(catalog.pagesByCluster[cluster.slug].reduce((groups, page) => {

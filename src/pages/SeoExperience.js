@@ -3,6 +3,8 @@ import {
   ArrowLeftOutlined,
   ArrowRightOutlined,
   CheckOutlined,
+  CloseOutlined,
+  DownOutlined,
   FileSearchOutlined,
   HomeOutlined,
   MenuOutlined,
@@ -76,21 +78,34 @@ function useSeoMetadata({ title, description, canonical, schema }) {
   }, [canonical, description, schema, title]);
 }
 
-function SeoHeader() {
+function SeoHeader({ searchValue = '', onSearchChange, showSearch = false }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="seo-header">
+    <header className={showSearch ? 'seo-header has-search' : 'seo-header'}>
       <a className="seo-brand" href="/" aria-label="Edvam Santos, página inicial">
         <strong>E/S</strong>
         <span>Edvam Santos</span>
       </a>
+      {showSearch && (
+        <label className="seo-header-search">
+          <SearchOutlined />
+          <span className="sr-only">Pesquisar no mapa do site</span>
+          <input
+            type="search"
+            value={searchValue}
+            onChange={(event) => onSearchChange(event.target.value)}
+            placeholder="Pesquisar serviço, dúvida ou tecnologia"
+            autoComplete="off"
+          />
+        </label>
+      )}
       <nav className={menuOpen ? 'seo-nav open' : 'seo-nav'} aria-label="Navegação SEO">
         <a href="/">
           <HomeOutlined />
           Portfólio
         </a>
-        <a href="/mapa-do-site-e-seo/">
+        <a href="/mapa-do-site-e-seo/" aria-current={showSearch ? 'page' : undefined}>
           <FileSearchOutlined />
           Mapa do Site e SEO
         </a>
@@ -106,7 +121,7 @@ function SeoHeader() {
         aria-expanded={menuOpen}
         onClick={() => setMenuOpen((current) => !current)}
       >
-        <MenuOutlined />
+        {menuOpen ? <CloseOutlined /> : <MenuOutlined />}
       </button>
     </header>
   );
@@ -366,6 +381,9 @@ function buildMapSchema() {
 function SeoMapPage() {
   const [query, setQuery] = useState('');
   const [activeCluster, setActiveCluster] = useState('todos');
+  const [expandedClusters, setExpandedClusters] = useState(
+    () => new Set([clusters[0].slug])
+  );
   const normalizedQuery = query.trim().toLocaleLowerCase('pt-BR');
   const schema = useMemo(() => buildMapSchema(), []);
 
@@ -379,10 +397,45 @@ function SeoMapPage() {
   const visibleClusters = clusters.filter(
     (cluster) => activeCluster === 'todos' || cluster.slug === activeCluster
   );
+  const filteredClusters = visibleClusters
+    .map((cluster) => ({
+      cluster,
+      pages: pagesByCluster[cluster.slug].filter((page) => {
+        if (!normalizedQuery) return true;
+        return `${page.h1} ${page.keyword} ${page.description}`
+          .toLocaleLowerCase('pt-BR')
+          .includes(normalizedQuery);
+      }),
+    }))
+    .filter((item) => item.pages.length);
+  const resultCount = filteredClusters.reduce(
+    (total, item) => total + item.pages.length,
+    0
+  );
+
+  const selectCluster = (slug) => {
+    setActiveCluster(slug);
+    if (slug !== 'todos') {
+      setExpandedClusters((current) => new Set([...current, slug]));
+    }
+  };
+
+  const toggleCluster = (slug) => {
+    setExpandedClusters((current) => {
+      const next = new Set(current);
+      if (next.has(slug)) next.delete(slug);
+      else next.add(slug);
+      return next;
+    });
+  };
 
   return (
     <div className="seo-experience seo-map-page">
-      <SeoHeader />
+      <SeoHeader
+        showSearch
+        searchValue={query}
+        onSearchChange={setQuery}
+      />
       <main>
         <nav className="seo-breadcrumbs" aria-label="Breadcrumb">
           <ol>
@@ -443,23 +496,17 @@ function SeoMapPage() {
               <span>ÍNDICE COMPLETO</span>
               <h2 id="map-browser-title">Encontre um tema</h2>
             </div>
-            <label className="map-search">
-              <SearchOutlined />
-              <span className="sr-only">Pesquisar páginas</span>
-              <input
-                type="search"
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder="Busque serviço, dúvida ou tecnologia"
-              />
-            </label>
+            <p className="map-results-count" aria-live="polite">
+              <strong>{resultCount}</strong>
+              {resultCount === 1 ? ' resultado' : ' resultados'}
+            </p>
           </header>
 
           <div className="map-cluster-tabs" role="group" aria-label="Filtrar por categoria">
             <button
               type="button"
               className={activeCluster === 'todos' ? 'active' : ''}
-              onClick={() => setActiveCluster('todos')}
+              onClick={() => selectCluster('todos')}
             >
               Todos
             </button>
@@ -468,7 +515,7 @@ function SeoMapPage() {
                 type="button"
                 key={cluster.slug}
                 className={activeCluster === cluster.slug ? 'active' : ''}
-                onClick={() => setActiveCluster(cluster.slug)}
+                onClick={() => selectCluster(cluster.slug)}
               >
                 {cluster.title}
               </button>
@@ -476,16 +523,7 @@ function SeoMapPage() {
           </div>
 
           <div className="map-clusters">
-            {visibleClusters.map((cluster, clusterIndex) => {
-              const clusterPages = pagesByCluster[cluster.slug].filter((page) => {
-                if (!normalizedQuery) return true;
-                return `${page.h1} ${page.keyword} ${page.description}`
-                  .toLocaleLowerCase('pt-BR')
-                  .includes(normalizedQuery);
-              });
-
-              if (!clusterPages.length) return null;
-
+            {filteredClusters.map(({ cluster, pages: clusterPages }, clusterIndex) => {
               const groupedPages = Object.entries(
                 clusterPages.reduce((groups, page) => {
                   const key = page.typeLabel;
@@ -494,9 +532,14 @@ function SeoMapPage() {
                   return groups;
                 }, {})
               );
+              const isExpanded =
+                normalizedQuery.length > 0 || expandedClusters.has(cluster.slug);
 
               return (
-                <section className="map-cluster" key={cluster.slug}>
+                <section
+                  className={isExpanded ? 'map-cluster expanded' : 'map-cluster'}
+                  key={cluster.slug}
+                >
                   <header>
                     <span>{String(clusterIndex + 1).padStart(2, '0')}</span>
                     <div>
@@ -507,7 +550,19 @@ function SeoMapPage() {
                         {cluster.technologies.map((technology) => <span key={technology}>{technology}</span>)}
                       </div>
                     </div>
-                    <strong>{clusterPages.length}</strong>
+                    <div className="map-cluster-actions">
+                      <strong>{clusterPages.length}</strong>
+                      <button
+                        type="button"
+                        className="map-cluster-toggle"
+                        onClick={() => toggleCluster(cluster.slug)}
+                        aria-label={`${isExpanded ? 'Recolher' : 'Abrir'} ${cluster.title}`}
+                        aria-expanded={isExpanded}
+                        disabled={normalizedQuery.length > 0}
+                      >
+                        <DownOutlined />
+                      </button>
+                    </div>
                   </header>
                   <div className="map-groups">
                     {groupedPages.map(([label, groupPages]) => (
@@ -525,6 +580,22 @@ function SeoMapPage() {
                 </section>
               );
             })}
+            {!filteredClusters.length && (
+              <div className="map-empty-state">
+                <SearchOutlined />
+                <h3>Nenhum conteúdo encontrado</h3>
+                <p>Tente uma palavra mais ampla ou selecione novamente todos os clusters.</p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setQuery('');
+                    selectCluster('todos');
+                  }}
+                >
+                  Limpar pesquisa
+                </button>
+              </div>
+            )}
           </div>
         </section>
 
