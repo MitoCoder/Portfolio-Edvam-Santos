@@ -6,6 +6,7 @@ import {
   CheckOutlined,
   CloseOutlined,
   CodeOutlined,
+  FileSearchOutlined,
   GithubOutlined,
   GlobalOutlined,
   InstagramOutlined,
@@ -826,7 +827,13 @@ const Home = () => {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.48, ease: [0.22, 1, 0.36, 1] }}
         >
-          <img src="https://github.com/MitoCoder.png" alt="Edvam Santos" />
+          <img
+            src="https://github.com/MitoCoder.png"
+            alt="Edvam Santos"
+            width="460"
+            height="460"
+            fetchpriority="high"
+          />
           <div className="portrait-halftone" aria-hidden="true" />
           <div className="portrait-label">
             <small>CRIANDO DESDE</small>
@@ -1085,6 +1092,10 @@ const Home = () => {
         <footer>
           <div className="footer-brand"><strong>E/S</strong><span>Edvam Santos<br />Full Stack Developer</span></div>
           <p>© {new Date().getFullYear()} — Feito com intenção e código.</p>
+          <a className="footer-sitemap" href="/mapa-do-site-e-seo/">
+            <FileSearchOutlined />
+            Mapa do Site e SEO
+          </a>
           <div className="footer-socials">
             {socialLinks.map((social) => (
               <a key={social.label} href={social.href} target="_blank" rel="noreferrer" aria-label={social.label}>

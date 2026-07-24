@@ -4,7 +4,7 @@ import App from './App';
 test('renders portfolio hero message', () => {
   render(<App />);
   expect(screen.getByText(/eu projeto e construo/i)).toBeInTheDocument();
-  expect(screen.getByText('2008')).toBeInTheDocument();
+  expect(screen.getByText('2010')).toBeInTheDocument();
   expect(screen.getByText('Sistema Control Tower')).toBeInTheDocument();
   expect(screen.getByText('Sistema Less Gráfica')).toBeInTheDocument();
   expect(screen.getByText('Sistema de PCP')).toBeInTheDocument();
