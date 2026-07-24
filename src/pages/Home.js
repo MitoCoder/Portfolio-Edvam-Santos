@@ -1110,11 +1110,6 @@ const Home = () => {
               <span>Edvam Santos<br />Full Stack Developer</span>
             </div>
             <p>© {new Date().getFullYear()} — Feito com intenção e código.</p>
-            <div className="footer-business-info" aria-label="Dados empresariais">
-              <strong>Dados empresariais</strong>
-              <span>CNPJ matriz atual: 60.604.470/0001-96</span>
-              <span>CNPJ matriz antiga: 57.810.680/0001-26</span>
-            </div>
           </div>
           <nav className="footer-map-section" aria-label="Mapa do site">
             <strong>Mapa do Site</strong>
@@ -1138,6 +1133,11 @@ const Home = () => {
                 </a>
               ))}
             </div>
+          </div>
+          <div className="footer-legal" aria-label="Dados empresariais">
+            <span>Dados empresariais</span>
+            <span>CNPJ matriz atual: 60.604.470/0001-96</span>
+            <span>CNPJ matriz antiga: 57.810.680/0001-26</span>
           </div>
         </footer>
       </section>
