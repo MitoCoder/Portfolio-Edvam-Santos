@@ -32,6 +32,34 @@ body {
   background: var(--acid);
 }
 
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(119, 213, 247, 0.82) rgba(10, 15, 19, 0.92);
+}
+
+*::-webkit-scrollbar {
+  width: 11px;
+  height: 11px;
+}
+
+*::-webkit-scrollbar-track {
+  background: rgba(10, 15, 19, 0.92);
+}
+
+*::-webkit-scrollbar-thumb {
+  border: 3px solid rgba(10, 15, 19, 0.92);
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--acid), #3b879f);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #a3e5fc, var(--acid));
+}
+
+*::-webkit-scrollbar-corner {
+  background: rgba(10, 15, 19, 0.92);
+}
+
 .portfolio {
   position: relative;
   overflow: clip;
