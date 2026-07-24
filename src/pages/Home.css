@@ -3040,7 +3040,7 @@ footer p {
     gap: 7px;
     font-size: 0.56rem;
   }
-  .hero-content { margin-top: clamp(52px, 10vh, 86px); }
+  .hero-content { margin-top: clamp(24px, 5vh, 42px); }
   .hero-kicker {
     max-width: 300px;
     margin-bottom: 15px;
