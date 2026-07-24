@@ -313,6 +313,7 @@ section[id] {
   font-size: clamp(0.72rem, 1vw, 0.9rem);
   line-height: 1.6;
   text-transform: uppercase;
+  text-wrap: balance;
 }
 
 .hero-kicker::before {
@@ -2268,6 +2269,25 @@ footer p {
   text-transform: uppercase;
 }
 
+.footer-business-info {
+  display: grid;
+  max-width: 270px;
+  padding-top: 14px;
+  gap: 6px;
+  border-top: 1px solid rgba(242, 245, 246, 0.18);
+  color: rgba(242, 245, 246, 0.68);
+  font-family: var(--mono);
+  font-size: 0.56rem;
+  line-height: 1.55;
+  text-transform: uppercase;
+}
+
+.footer-business-info strong {
+  color: var(--acid);
+  font-size: 0.58rem;
+  font-weight: 500;
+}
+
 .footer-socials {
   display: flex;
   justify-content: flex-end;
@@ -2886,7 +2906,7 @@ footer p {
     margin-left: 0;
     padding: 8px 10px;
   }
-  .hero-content { margin-top: 56px; justify-content: flex-start; }
+  .hero-content { margin-top: clamp(76px, 12vh, 140px); justify-content: flex-start; }
   .hero-content h1 { font-size: clamp(3.4rem, 10.5vw, 6rem); }
   .hero-portrait { right: 20px; bottom: 0; width: 47vw; height: 46%; }
   .hero-bottom { max-width: 480px; grid-template-columns: 1fr; gap: 24px; }
@@ -3021,7 +3041,7 @@ footer p {
     gap: 7px;
     font-size: 0.56rem;
   }
-  .hero-content { margin-top: 30px; }
+  .hero-content { margin-top: clamp(52px, 10vh, 86px); }
   .hero-kicker {
     max-width: 300px;
     margin-bottom: 15px;
@@ -3030,7 +3050,6 @@ footer p {
     line-height: 1.55;
     letter-spacing: 0.04em;
   }
-  .hero-kicker br { display: none; }
   .hero-content h1 { font-size: clamp(3rem, 14.5vw, 4.5rem); }
   .hero-bottom > p { max-width: 92%; font-size: 0.88rem; }
   .hero-portrait { right: 16px; width: 58vw; height: 36%; }
@@ -3304,6 +3323,7 @@ footer p {
     grid-template-columns: 1fr auto;
     gap: 24px 10px;
   }
+  .footer-business-info { max-width: 100%; }
   .footer-actions { gap: 6px; }
   .footer-map-full { display: none; }
   .footer-map-short { display: inline; }

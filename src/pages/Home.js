@@ -816,7 +816,7 @@ const Home = () => {
 
         <motion.div className="hero-content" variants={stagger} initial="hidden" animate="visible">
           <motion.p variants={reveal} className="hero-kicker">
-            Ideias ambiciosas merecem<br />execução à altura.
+            Ideias ambiciosas merecem execução à altura.
           </motion.p>
           <motion.h1 variants={reveal}>
             Eu projeto e construo
@@ -1110,6 +1110,11 @@ const Home = () => {
               <span>Edvam Santos<br />Full Stack Developer</span>
             </div>
             <p>© {new Date().getFullYear()} — Feito com intenção e código.</p>
+            <div className="footer-business-info" aria-label="Dados empresariais">
+              <strong>Dados empresariais</strong>
+              <span>CNPJ matriz atual: 60.604.470/0001-96</span>
+              <span>CNPJ matriz antiga: 57.810.680/0001-26</span>
+            </div>
           </div>
           <nav className="footer-map-section" aria-label="Mapa do site">
             <strong>Mapa do Site</strong>
