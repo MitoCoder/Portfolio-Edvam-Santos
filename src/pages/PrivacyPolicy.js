@@ -102,7 +102,7 @@ function PrivacyPolicy() {
             </p>
             <div className="privacy-summary" aria-label="Resumo da política">
               <span><LockOutlined /> Dados operacionais salvos localmente</span>
-              <span><SafetyCertificateOutlined /> Licença verificada por API própria</span>
+              <span><SafetyCertificateOutlined /> Licença verificada por serviço próprio</span>
               <span><CheckOutlined /> Sem venda de dados pessoais</span>
             </div>
           </header>
@@ -131,7 +131,7 @@ function PrivacyPolicy() {
                 chrome.storage.local para manter dados necessários ao seu
                 funcionamento. Esses dados ficam no dispositivo do usuário, salvo
                 quando uma ação específica de licença exigir comunicação com a
-                API de ativação.
+                serviço próprio de licenciamento.
               </p>
               <ul>
                 {storedData.map((item) => <li key={item}>{item}</li>)}
@@ -186,7 +186,7 @@ function PrivacyPolicy() {
               <h2>6. Compartilhamento de dados</h2>
               <p>
                 Os dados não são vendidos. O compartilhamento externo é limitado
-                à API de licenças usada para registrar instalação, consultar
+                ao serviço próprio de licenciamento usado para registrar instalação, consultar
                 ativação e manter o controle de acesso ao produto. A API pode
                 registrar essas informações em infraestrutura própria para fins
                 operacionais, suporte, segurança e gestão de licença.
@@ -231,7 +231,7 @@ function PrivacyPolicy() {
               <h2>9. Alterações nesta política</h2>
               <p>
                 Esta política pode ser atualizada para refletir mudanças na
-                extensão, na API de licenciamento, nas permissões usadas ou em
+                extensão, no serviço de licenciamento, nas permissões usadas ou em
                 requisitos legais e de plataforma. A versão publicada nesta URL
                 será considerada a versão vigente.
               </p>
