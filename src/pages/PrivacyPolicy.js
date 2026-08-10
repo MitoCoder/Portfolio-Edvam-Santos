@@ -68,7 +68,7 @@ const permissions = [
   'tabs: identificar a aba do WhatsApp Web e aplicar a interface da extensão no contexto correto.',
   'alarms: executar verificações e rotinas internas relacionadas à ativação e funcionamento.',
   'https://web.whatsapp.com/*: inserir a interface e os recursos da extensão no WhatsApp Web.',
-  'https://api-licencas-phi.vercel.app/*: registrar instalação e consultar status de licença.',
+  'Serviço próprio de licenciamento: registrar instalação e consultar status de licença.',
 ];
 
 function PrivacyPolicy() {
@@ -142,9 +142,8 @@ function PrivacyPolicy() {
               <h2>3. Verificação de licença</h2>
               <p>
                 Para registrar a instalação e verificar o status da licença, a
-                extensão se comunica com a API:
+                extensão se comunica com um serviço próprio de licenciamento.
               </p>
-              <code>https://api-licencas-phi.vercel.app/api</code>
               <p>
                 Nessa comunicação podem ser enviados identificadores técnicos da
                 instalação, chave do cliente, versão da extensão, datas de teste
